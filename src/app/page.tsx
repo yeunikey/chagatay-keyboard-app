@@ -20,15 +20,6 @@ type TokenGroup =
 
 const NON_FORWARD_CONNECTORS = new Set([1, 2, 11, 12, 13, 14, 15, 32]);
 
-const KEYBOARD_LAYOUT = [
-  // Ряд 1 (Верхний: твердые, гортанные и шипящие)
-  [19, 18, 6, 25, 24, 23, 22, 33, 10, 9, 7, 8],
-  // Ряд 2 (Средний/Домашний: самые частотные, гласные и основные согласные)
-  [17, 16, 34, 3, 29, 2, 5, 31, 30, 26, 27],
-  // Ряд 3 (Нижний: з, р, д, п, уау и спецсимволы)
-  [21, 20, 14, 15, 13, 12, 11, 4, 32, 28, 1]
-];
-
 export default function App() {
 
   const [inputText, setInputText] = useState("");
@@ -590,30 +581,21 @@ export default function App() {
                 <span className="text-xs bg-slate-300 text-slate-700 px-2 py-0.5 rounded-full">{keys.length}</span>
               </div>
 
-              <div className="flex-1 overflow-y-auto pr-1 custom-scrollbar">
-                <div className="flex flex-col gap-3 overflow-hidden">
-                  {KEYBOARD_LAYOUT.map((row, i) => (
-                    <div className="flex gap-3 overflow-hidden" key={i}>
-                      {row.map((keyId) => {
-                        const key = keys.find(k => k.id === keyId);
-                        if (!key) return null;
-                        
-                        return (
-                          <button
-                            key={key.id}
-                            onClick={() => handleKeyClick(key)}
-                            title={`Вставит: ${key.value}`}
-                            className="flex-1 group relative flex flex-col items-center justify-center p-2 bg-white hover:bg-blue-50 active:bg-blue-100 border-b-4 border-slate-300 active:border-b-0 active:translate-y-1 rounded-lg transition-all duration-100 text-center"
-                          >
-                            <span className='absolute top-1 left-1 text-[10px] text-slate-300'>{key.id}</span>
-                            <span className='font-normal text-2xl my-2'>{key.value.isolated}</span>
-                            <span className="font-medium text-slate-500 break-all leading-tight">{key.label}</span>
-                          </button>
-                        )
-                      })}
-                    </div>
-                  ))}
-                </div>
+              <div className="flex-1 grid gap-3 grid-cols-5 sm:grid-cols-6 md:grid-cols-7 lg:grid-cols-8 xl:grid-cols-10">
+                {keys.map((key) => {
+                  return (
+                    <button
+                      key={key.id}
+                      onClick={() => handleKeyClick(key)}
+                      title={`Вставит: ${key.value.isolated}`}
+                      className="flex-1 group relative flex flex-col items-center justify-center p-1 md:p-2 bg-white hover:bg-blue-50 active:bg-blue-100 border-b-2 md:border-b-4 border-slate-300 active:border-b-0 active:translate-y-0.5 md:active:translate-y-1 rounded md:rounded-lg transition-all duration-100 text-center min-w-[36px] md:min-w-0"
+                    >
+                      <span className='absolute top-0.5 left-0.5 md:top-1 md:left-1 text-[8px] md:text-[10px] text-slate-300'>{key.id}</span>
+                      <span className='font-normal text-xl md:text-2xl my-1 md:my-2'>{key.value.isolated}</span>
+                      <span className="font-medium text-slate-500 break-all leading-tight text-sm text-xs">{key.label}</span>
+                    </button>
+                  )
+                })}
               </div>
             </div>
           </div>
