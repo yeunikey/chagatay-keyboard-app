@@ -120,8 +120,8 @@ export default function App() {
                 <span className="text-xs bg-slate-300 text-slate-700 px-2 py-0.5 rounded-full">{keys.length}</span>
               </div>
 
-              <div className="flex-1 overflow-y-auto pr-1 custom-scrollbar overflow-hidden">
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
+              <div className="flex-1 overflow-y-auto pr-1 custom-scrollbar">
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 overflow-hidden">
                   {keys.map((key) => (
                     <button
                       key={key.id}
