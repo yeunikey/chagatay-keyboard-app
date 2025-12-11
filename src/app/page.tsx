@@ -133,9 +133,9 @@ export default function App() {
                       key={key.id}
                       onClick={() => handleKeyClick(key.value)}
                       title={`Вставит: ${key.value}`}
-                      className="group relative flex flex-col items-center justify-center p-3 bg-white hover:bg-blue-50 active:bg-blue-100 border-b-4 border-slate-300 active:border-b-0 active:translate-y-1 rounded-lg transition-all duration-100 text-center"
+                      className="group relative flex flex-col items-center justify-center p-2 bg-white hover:bg-blue-50 active:bg-blue-100 border-b-4 border-slate-300 active:border-b-0 active:translate-y-1 rounded-lg transition-all duration-100 text-center"
                     >
-                      <span className="font-bold text-slate-800 break-all leading-tight">{`${key.label} (${key.value})`}</span>
+                      <span className="font-bold text-slate-800 break-all leading-tight">{`${key.label} (`}<span className='font-normal text-2xl'>{key.value}</span>{`)`}</span>
                     </button>
                   ))}
                 </div>
