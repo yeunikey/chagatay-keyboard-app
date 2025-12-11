@@ -14,7 +14,20 @@ type KeyItem = {
   };
 };
 
+type TokenGroup =
+  | { type: 'keys'; content: KeyItem[] }
+  | { type: 'text'; content: string[] };
+
 const NON_FORWARD_CONNECTORS = new Set([1, 2, 11, 12, 13, 14, 15, 32]);
+
+const KEYBOARD_LAYOUT = [
+  // Ряд 1 (Верхний: твердые, гортанные и шипящие)
+  [19, 18, 6, 25, 24, 23, 22, 33, 10, 9, 7, 8],
+  // Ряд 2 (Средний/Домашний: самые частотные, гласные и основные согласные)
+  [17, 16, 34, 3, 29, 2, 5, 31, 30, 26, 27],
+  // Ряд 3 (Нижний: з, р, д, п, уау и спецсимволы)
+  [21, 20, 14, 15, 13, 12, 11, 4, 32, 28, 1]
+];
 
 export default function App() {
 
@@ -363,151 +376,162 @@ export default function App() {
     },
   ]);
 
-
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
-  // Карта для быстрого поиска KeyItem по любому из его символов
-  // Теперь она используется не только при клике, но и при ручном редактировании текста
   const charToKeyMap = useMemo(() => {
     const map = new Map<string, KeyItem>();
     keys.forEach(k => {
-      if (k.value.isolated && k.value.isolated !== "—") map.set(k.value.isolated, k);
-      if (k.value.final && k.value.final !== "—") map.set(k.value.final, k);
-      if (k.value.medial && k.value.medial !== "—") map.set(k.value.medial, k);
-      if (k.value.initial && k.value.initial !== "—") map.set(k.value.initial, k);
+      const cleanChar = (str: string) => str ? str.replace(/ـ/g, "") : "";
+
+      if (k.value.isolated && k.value.isolated !== "—") map.set(cleanChar(k.value.isolated), k);
+      if (k.value.final && k.value.final !== "—") map.set(cleanChar(k.value.final), k);
+      if (k.value.medial && k.value.medial !== "—") map.set(cleanChar(k.value.medial), k);
+      if (k.value.initial && k.value.initial !== "—") map.set(cleanChar(k.value.initial), k);
     });
     return map;
   }, [keys]);
 
-  // Функция "Шейпер" - преобразует цепочку ключей в строку с правильными формами
-  const shapeKeys = (keyChain: KeyItem[]): string => {
-    let result = "";
+  const getShape = (key: KeyItem, type: 'isolated' | 'final' | 'medial' | 'initial'): string => {
+    return key.value[type] || key.value.isolated;
+  };
 
-    for (let i = 0; i < keyChain.length; i++) {
-      const current = keyChain[i];
+  const shapeKeys = (keyChain: KeyItem[]): string[] => {
+    return keyChain.map((current, i) => {
       const prev = keyChain[i - 1];
       const next = keyChain[i + 1];
 
-      const connectToPrev = prev && !NON_FORWARD_CONNECTORS.has(prev.id);
-      const connectToNext = next && !NON_FORWARD_CONNECTORS.has(current.id);
+      const canPrevConnectForward = prev && !NON_FORWARD_CONNECTORS.has(prev.id);
+      const canCurrentConnectBackward = current.value.final !== "—" && current.value.medial !== "—";
+      const connectToPrev = canPrevConnectForward && canCurrentConnectBackward;
 
-      if (!connectToPrev && !connectToNext) {
-        result += current.value.isolated;
-      } else if (connectToPrev && !connectToNext) {
-        result += current.value.final;
-      } else if (!connectToPrev && connectToNext) {
-        result += current.value.initial;
-      } else if (connectToPrev && connectToNext) {
-        result += current.value.medial;
-      }
-    }
-    return result;
+      const canCurrentConnectForward = !NON_FORWARD_CONNECTORS.has(current.id);
+      const canNextConnectBackward = next && next.value.final !== "—" && next.value.medial !== "—";
+      const connectToNext = next && canCurrentConnectForward && canNextConnectBackward;
+
+      if (!connectToPrev && !connectToNext) return getShape(current, 'isolated');
+      if (connectToPrev && !connectToNext) return getShape(current, 'final');
+      if (!connectToPrev && connectToNext) return getShape(current, 'initial');
+      return getShape(current, 'medial');
+    });
   };
 
-  // Главная функция "Лечения" текста
-  // Она берет сырую строку (где могут быть удаленные буквы или неправильные формы)
-  // разбивает её на токены, находит последовательности чагатайских букв и пересчитывает их формы
-  const healText = (rawText: string) => {
-    let result = "";
-    let buffer: KeyItem[] = [];
+  const parseTextToTokens = (text: string): (KeyItem | string)[] => {
+    const tokens: (KeyItem | string)[] = [];
+    const cleanText = text.replace(/ـ/g, "");
 
-    const flushBuffer = () => {
-      if (buffer.length > 0) {
-        result += shapeKeys(buffer);
-        buffer = [];
-      }
-    };
-
-    for (const char of rawText) {
+    for (const char of cleanText) {
       const key = charToKeyMap.get(char);
       if (key) {
-        // Если символ - это часть нашего алфавита, добавляем в буфер для обработки
-        buffer.push(key);
+        tokens.push(key);
       } else {
-        // Если встретили пробел, цифру или другой символ:
-        // 1. Сначала обрабатываем накопленное слово
-        flushBuffer();
-        // 2. Добавляем этот "чужой" символ как есть
-        result += char;
+        tokens.push(char);
       }
     }
-    // Обрабатываем остаток буфера в конце строки
-    flushBuffer();
-
-    return result;
+    return tokens;
   };
 
-  // Обработчик изменения текста (ввод с клавиатуры, удаление, вставка)
+  const processTextChange = (newRawText: string, cursorIndexInRaw: number) => {
+    try {
+      const textBeforeCursor = newRawText.substring(0, cursorIndexInRaw);
+      const cleanTextBeforeCursor = textBeforeCursor.replace(/ـ/g, "");
+      const logicalIndex = cleanTextBeforeCursor.length;
+
+      const allTokens = parseTextToTokens(newRawText);
+
+      let resultString = "";
+      let shapedLengthBeforeCursor = 0;
+
+      const groups: TokenGroup[] = [];
+      let currentGroup: (KeyItem | string)[] = [];
+      let currentType: 'keys' | 'text' | null = null;
+
+      const pushGroup = (type: 'keys' | 'text', content: (KeyItem | string)[]) => {
+        if (type === 'keys') {
+          groups.push({ type: 'keys', content: content as KeyItem[] });
+        } else {
+          groups.push({ type: 'text', content: content as string[] });
+        }
+      };
+
+      for (const token of allTokens) {
+        const isKey = typeof token !== 'string';
+        const type = isKey ? 'keys' : 'text';
+
+        if (type !== currentType) {
+          if (currentType && currentGroup.length > 0) {
+            pushGroup(currentType, currentGroup);
+          }
+          currentGroup = [token];
+          currentType = type;
+        } else {
+          currentGroup.push(token);
+        }
+      }
+      if (currentType && currentGroup.length > 0) {
+        pushGroup(currentType, currentGroup);
+      }
+
+      let tokenCounter = 0;
+
+      groups.forEach(group => {
+        if (group.type === 'text') {
+          const str = group.content.join("");
+          resultString += str;
+          const len = group.content.length;
+          if (tokenCounter < logicalIndex) {
+            const remainingNeeded = logicalIndex - tokenCounter;
+            if (remainingNeeded >= len) {
+              shapedLengthBeforeCursor += str.length;
+            } else {
+              shapedLengthBeforeCursor += remainingNeeded;
+            }
+          }
+          tokenCounter += len;
+        } else {
+          const keysInGroup = group.content;
+          const forms = shapeKeys(keysInGroup);
+
+          forms.forEach((form) => {
+            resultString += form;
+            if (tokenCounter < logicalIndex) {
+              shapedLengthBeforeCursor += form.length;
+            }
+            tokenCounter++;
+          });
+        }
+      });
+
+      return { text: resultString, cursor: shapedLengthBeforeCursor };
+
+    } catch (err) {
+      console.error("Text processing error:", err);
+      return { text: newRawText, cursor: cursorIndexInRaw };
+    }
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const rawVal = e.target.value;
-    const cursorPos = e.target.selectionStart; // Запоминаем где был курсор
-
-    // Прогоняем весь текст через "лекаря"
-    const processedVal = healText(rawVal);
-
-    setInputText(processedVal);
-
-    // Восстанавливаем позицию курсора после рендера
-    // Используем setTimeout чтобы React успел обновить DOM
+    const cursorPos = e.target.selectionStart;
+    const { text, cursor } = processTextChange(rawVal, cursorPos);
+    setInputText(text);
     setTimeout(() => {
-      if (textareaRef.current) {
-        textareaRef.current.setSelectionRange(cursorPos, cursorPos);
-      }
+      if (textareaRef.current) textareaRef.current.setSelectionRange(cursor, cursor);
     }, 0);
   };
 
-  // Клик по виртуальной кнопке
-  // Теперь он просто вставляет символ в сыром виде, а потом запускает общий механизм лечения
-  // Это упрощает логику и делает её единой для всех способов ввода
   const handleKeyClick = (key: KeyItem) => {
     const textarea = textareaRef.current;
     if (!textarea) return;
-
     const start = textarea.selectionStart;
     const end = textarea.selectionEnd;
-    const currentText = inputText;
-
-    // Вставляем изолированную форму (или любую, healText всё равно исправит)
     const rawInserted = key.value.isolated;
-
-    const newRawText = currentText.substring(0, start) + rawInserted + currentText.substring(end);
-
-    // Лечим результат вставки
-    const processedVal = healText(newRawText);
-
-    setInputText(processedVal);
-
-    // Ставим курсор после вставленного символа
+    const newRawText = inputText.substring(0, start) + rawInserted + inputText.substring(end);
+    const newRawCursorIndex = start + rawInserted.length;
+    const { text, cursor } = processTextChange(newRawText, newRawCursorIndex);
+    setInputText(text);
     setTimeout(() => {
       textarea.focus();
-      const newCursorPos = start + 1; // +1 так как мы вставили 1 символ
-      textarea.setSelectionRange(newCursorPos, newCursorPos);
-    }, 0);
-  };
-
-  const handleInsertPhrase = (wordIds: number[]) => {
-    const textarea = textareaRef.current;
-    if (!textarea) return;
-
-    const phraseKeys = wordIds.map(id => keys.find(k => k.id === id)).filter(Boolean) as KeyItem[];
-    if (phraseKeys.length === 0) return;
-
-    const shapedPhrase = shapeKeys(phraseKeys);
-
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const currentText = inputText;
-
-    // Здесь тоже прогоняем через healText, чтобы фраза правильно "приклеилась" к предыдущему слову если пробела нет
-    const newRawText = currentText.substring(0, start) + shapedPhrase + currentText.substring(end);
-    const processedVal = healText(newRawText);
-
-    setInputText(processedVal);
-
-    setTimeout(() => {
-      textarea.focus();
-      const newCursorPos = start + shapedPhrase.length;
-      textarea.setSelectionRange(newCursorPos, newCursorPos);
+      textarea.setSelectionRange(cursor, cursor);
     }, 0);
   };
 
@@ -523,7 +547,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans p-4 md:p-8">
-      <div className="max-w-4xl mx-auto space-y-6">
+      <div className="max-w-6xl mx-auto space-y-6">
 
         <main className="flex flex-col gap-6">
 
@@ -567,17 +591,27 @@ export default function App() {
               </div>
 
               <div className="flex-1 overflow-y-auto pr-1 custom-scrollbar">
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 overflow-hidden">
-                  {keys.map((key) => (
-                    <button
-                      key={key.id}
-                      onClick={() => handleKeyClick(key)}
-                      title={`Вставит: ${key.value}`}
-                      className="group relative flex flex-col items-center justify-center p-2 bg-white hover:bg-blue-50 active:bg-blue-100 border-b-4 border-slate-300 active:border-b-0 active:translate-y-1 rounded-lg transition-all duration-100 text-center"
-                    >
-                      <span className='absolute top-1 left-1 text-[10px] text-slate-300'>{key.id}</span>
-                      <span className="font-bold text-slate-800 break-all leading-tight">{`${key.label} (`}<span className='font-normal text-2xl'>{key.value.isolated}</span>{`)`}</span>
-                    </button>
+                <div className="flex flex-col gap-3 overflow-hidden">
+                  {KEYBOARD_LAYOUT.map((row, i) => (
+                    <div className="flex gap-3 overflow-hidden" key={i}>
+                      {row.map((keyId) => {
+                        const key = keys.find(k => k.id === keyId);
+                        if (!key) return null;
+                        
+                        return (
+                          <button
+                            key={key.id}
+                            onClick={() => handleKeyClick(key)}
+                            title={`Вставит: ${key.value}`}
+                            className="flex-1 group relative flex flex-col items-center justify-center p-2 bg-white hover:bg-blue-50 active:bg-blue-100 border-b-4 border-slate-300 active:border-b-0 active:translate-y-1 rounded-lg transition-all duration-100 text-center"
+                          >
+                            <span className='absolute top-1 left-1 text-[10px] text-slate-300'>{key.id}</span>
+                            <span className='font-normal text-2xl my-2'>{key.value.isolated}</span>
+                            <span className="font-medium text-slate-500 break-all leading-tight">{key.label}</span>
+                          </button>
+                        )
+                      })}
+                    </div>
                   ))}
                 </div>
               </div>
