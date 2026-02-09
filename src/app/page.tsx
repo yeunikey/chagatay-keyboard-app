@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useState, useRef, useMemo } from 'react';
-import { Type, Copy, RotateCcw } from 'lucide-react';
+import { useState, useRef, useMemo } from "react";
+import { Type, Copy, RotateCcw, Minus, Plus } from "lucide-react";
 
 type KeyItem = {
   id: number;
@@ -15,14 +15,14 @@ type KeyItem = {
 };
 
 type TokenGroup =
-  | { type: 'keys'; content: KeyItem[] }
-  | { type: 'text'; content: string[] };
+  | { type: "keys"; content: KeyItem[] }
+  | { type: "text"; content: string[] };
 
 const NON_FORWARD_CONNECTORS = new Set([1, 2, 11, 12, 13, 14, 15, 32]);
 
 export default function App() {
-
   const [inputText, setInputText] = useState("");
+  const [fontSize, setFontSize] = useState(32);
 
   const [keys, setKeys] = useState<KeyItem[]>([
     {
@@ -33,7 +33,7 @@ export default function App() {
         final: "—",
         medial: "—",
         initial: "—",
-      }
+      },
     },
     {
       id: 2,
@@ -43,7 +43,17 @@ export default function App() {
         final: "ﺎ",
         medial: "ﺎ",
         initial: "ﺍ",
-      }
+      },
+    },
+    {
+      id: 36,
+      label: "алиф",
+      value: {
+        isolated: "أ",
+        final: "ﺎ",
+        medial: "ﺎ",
+        initial: "ﺍ",
+      },
     },
     {
       id: 3,
@@ -53,7 +63,7 @@ export default function App() {
         final: "ﺐ",
         medial: "ﺒ",
         initial: "ﺑ",
-      }
+      },
     },
     {
       id: 4,
@@ -62,8 +72,8 @@ export default function App() {
         isolated: "ﭖ",
         final: "ﭗ",
         medial: "ﭙ",
-        initial: "ﭘ"
-      }
+        initial: "ﭘ",
+      },
     },
     {
       id: 5,
@@ -72,8 +82,8 @@ export default function App() {
         isolated: "ﺕ",
         final: "ﺖ",
         medial: "ﺘ",
-        initial: "ﺗ"
-      }
+        initial: "ﺗ",
+      },
     },
     {
       id: 6,
@@ -82,8 +92,8 @@ export default function App() {
         isolated: "ﺙ",
         final: "ﺚ",
         medial: "ﺜ",
-        initial: "ﺛ"
-      }
+        initial: "ﺛ",
+      },
     },
     {
       id: 7,
@@ -92,8 +102,8 @@ export default function App() {
         isolated: "ﺝ",
         final: "ﺞ",
         medial: "ﺠ",
-        initial: "ﺟ"
-      }
+        initial: "ﺟ",
+      },
     },
     {
       id: 8,
@@ -102,8 +112,8 @@ export default function App() {
         isolated: "ﭺ",
         final: "ﭻ",
         medial: "ﭽ",
-        initial: "ﭼ"
-      }
+        initial: "ﭼ",
+      },
     },
     {
       id: 9,
@@ -112,8 +122,8 @@ export default function App() {
         isolated: "ﺡ",
         final: "ﺢ",
         initial: "ﺤ",
-        medial: "ﺣ"
-      }
+        medial: "ﺣ",
+      },
     },
     {
       id: 10,
@@ -122,8 +132,8 @@ export default function App() {
         isolated: "ﺥ",
         final: "ﺦ",
         medial: "ﺨ",
-        initial: "ﺧ"
-      }
+        initial: "ﺧ",
+      },
     },
     {
       id: 11,
@@ -132,8 +142,8 @@ export default function App() {
         isolated: "ﺩ",
         final: "ﺪ",
         medial: "ﺪ",
-        initial: "ﺩ"
-      }
+        initial: "ﺩ",
+      },
     },
     {
       id: 12,
@@ -142,8 +152,8 @@ export default function App() {
         isolated: "ﺫ",
         final: "ﺬ",
         medial: "ﺬ",
-        initial: "ﺫ"
-      }
+        initial: "ﺫ",
+      },
     },
     {
       id: 13,
@@ -152,8 +162,8 @@ export default function App() {
         isolated: "ﺭ",
         final: "ﺮ",
         medial: "ﺮ",
-        initial: "ﺭ"
-      }
+        initial: "ﺭ",
+      },
     },
     {
       id: 14,
@@ -162,8 +172,8 @@ export default function App() {
         isolated: "ﺯ",
         final: "ﺰ",
         medial: "ﺰ",
-        initial: "ﺯ"
-      }
+        initial: "ﺯ",
+      },
     },
     {
       id: 15,
@@ -172,8 +182,8 @@ export default function App() {
         isolated: "ﮊ",
         final: "ﮋ",
         medial: "ﮋ",
-        initial: "ﮊ"
-      }
+        initial: "ﮊ",
+      },
     },
     {
       id: 16,
@@ -182,8 +192,8 @@ export default function App() {
         isolated: "ﺱ",
         final: "ﺲ",
         medial: "ﺴ",
-        initial: "ﺳ"
-      }
+        initial: "ﺳ",
+      },
     },
     {
       id: 17,
@@ -192,8 +202,8 @@ export default function App() {
         isolated: "ﺵ",
         final: "ﺶ",
         medial: "ﺸ",
-        initial: "ﺷ"
-      }
+        initial: "ﺷ",
+      },
     },
     {
       id: 18,
@@ -202,8 +212,8 @@ export default function App() {
         isolated: "ﺹ",
         final: "ﺺ",
         medial: "ﺼ",
-        initial: "ﺻ"
-      }
+        initial: "ﺻ",
+      },
     },
     {
       id: 19,
@@ -212,8 +222,8 @@ export default function App() {
         isolated: "ﺽ",
         final: "ﺾ",
         medial: "ﻀ",
-        initial: "ﺿ"
-      }
+        initial: "ﺿ",
+      },
     },
     {
       id: 20,
@@ -222,8 +232,8 @@ export default function App() {
         isolated: "ﻁ",
         final: "ﻂ",
         medial: "ﻃ",
-        initial: "ﻃ"
-      }
+        initial: "ﻃ",
+      },
     },
     {
       id: 21,
@@ -232,8 +242,8 @@ export default function App() {
         isolated: "ﻅ",
         final: "ﻅ",
         medial: "ﻅ",
-        initial: "ﻅ"
-      }
+        initial: "ﻅ",
+      },
     },
     {
       id: 22,
@@ -242,8 +252,8 @@ export default function App() {
         isolated: "ﻉ",
         final: "ﻊ",
         medial: "ﻌ",
-        initial: "ﻋ"
-      }
+        initial: "ﻋ",
+      },
     },
     {
       id: 23,
@@ -252,8 +262,8 @@ export default function App() {
         isolated: "ﻍ",
         final: "ﻎ",
         medial: "ﻐ",
-        initial: "ﻏ"
-      }
+        initial: "ﻏ",
+      },
     },
     {
       id: 24,
@@ -262,8 +272,8 @@ export default function App() {
         isolated: "ﻑ",
         final: "ﻒ",
         medial: "ﻔ",
-        initial: "ﻓ"
-      }
+        initial: "ﻓ",
+      },
     },
     {
       id: 25,
@@ -272,8 +282,18 @@ export default function App() {
         isolated: "ﻕ",
         final: "ﻖ",
         medial: "ﻘ",
-        initial: "ﻗ"
-      }
+        initial: "ﻗ",
+      },
+    },
+    {
+      id: 37,
+      label: "кәф",
+      value: {
+        isolated: "ك",
+        final: "ـك",
+        medial: "ك",
+        initial: "ﻛ",
+      },
     },
     {
       id: 26,
@@ -282,8 +302,8 @@ export default function App() {
         isolated: "ک",
         final: "ک",
         medial: "ﻜ",
-        initial: "ﻛ"
-      }
+        initial: "ﻛ",
+      },
     },
     {
       id: 27,
@@ -292,8 +312,8 @@ export default function App() {
         isolated: "ﮒ",
         final: "ﮓ",
         medial: "ﮕ",
-        initial: "ﮔ"
-      }
+        initial: "ﮔ",
+      },
     },
     {
       id: 28,
@@ -302,8 +322,8 @@ export default function App() {
         isolated: "ݣ",
         final: "ـݣ",
         medial: "ـݣـ",
-        initial: "ݣـ"
-      }
+        initial: "ݣـ",
+      },
     },
     {
       id: 29,
@@ -312,8 +332,8 @@ export default function App() {
         isolated: "ﻝ",
         final: "ﻝ",
         medial: "ﻠ",
-        initial: "ﻟ"
-      }
+        initial: "ﻟ",
+      },
     },
     {
       id: 30,
@@ -322,8 +342,8 @@ export default function App() {
         isolated: "ﻡ",
         final: "ﻢ",
         medial: "ﻤ",
-        initial: "ﻣ"
-      }
+        initial: "ﻣ",
+      },
     },
     {
       id: 31,
@@ -332,8 +352,8 @@ export default function App() {
         isolated: "ﻥ",
         final: "ﻥ",
         medial: "ﻨ",
-        initial: "ﻧ"
-      }
+        initial: "ﻧ",
+      },
     },
     {
       id: 32,
@@ -342,8 +362,8 @@ export default function App() {
         isolated: "ﻭ",
         final: "ﻮ",
         medial: "ﻮ",
-        initial: "ﻭ"
-      }
+        initial: "ﻭ",
+      },
     },
     {
       id: 33,
@@ -352,8 +372,8 @@ export default function App() {
         isolated: "ﻩ",
         final: "ﻪ",
         medial: "ﻬ",
-        initial: "ﻫ"
-      }
+        initial: "ﻫ",
+      },
     },
     {
       id: 34,
@@ -362,8 +382,18 @@ export default function App() {
         isolated: "ﻯ",
         final: "ﻰ",
         medial: "ﻴ",
-        initial: "ﻳ"
-      }
+        initial: "ﻳ",
+      },
+    },
+    {
+      id: 35,
+      label: "йе",
+      value: {
+        isolated: "ﻯ",
+        final: "ﻰ",
+        medial: "ﻴ",
+        initial: "ﻳ",
+      },
     },
   ]);
 
@@ -371,18 +401,25 @@ export default function App() {
 
   const charToKeyMap = useMemo(() => {
     const map = new Map<string, KeyItem>();
-    keys.forEach(k => {
-      const cleanChar = (str: string) => str ? str.replace(/ـ/g, "") : "";
+    keys.forEach((k) => {
+      const cleanChar = (str: string) => (str ? str.replace(/ـ/g, "") : "");
 
-      if (k.value.isolated && k.value.isolated !== "—") map.set(cleanChar(k.value.isolated), k);
-      if (k.value.final && k.value.final !== "—") map.set(cleanChar(k.value.final), k);
-      if (k.value.medial && k.value.medial !== "—") map.set(cleanChar(k.value.medial), k);
-      if (k.value.initial && k.value.initial !== "—") map.set(cleanChar(k.value.initial), k);
+      if (k.value.isolated && k.value.isolated !== "—")
+        map.set(cleanChar(k.value.isolated), k);
+      if (k.value.final && k.value.final !== "—")
+        map.set(cleanChar(k.value.final), k);
+      if (k.value.medial && k.value.medial !== "—")
+        map.set(cleanChar(k.value.medial), k);
+      if (k.value.initial && k.value.initial !== "—")
+        map.set(cleanChar(k.value.initial), k);
     });
     return map;
   }, [keys]);
 
-  const getShape = (key: KeyItem, type: 'isolated' | 'final' | 'medial' | 'initial'): string => {
+  const getShape = (
+    key: KeyItem,
+    type: "isolated" | "final" | "medial" | "initial",
+  ): string => {
     return key.value[type] || key.value.isolated;
   };
 
@@ -391,18 +428,23 @@ export default function App() {
       const prev = keyChain[i - 1];
       const next = keyChain[i + 1];
 
-      const canPrevConnectForward = prev && !NON_FORWARD_CONNECTORS.has(prev.id);
-      const canCurrentConnectBackward = current.value.final !== "—" && current.value.medial !== "—";
+      const canPrevConnectForward =
+        prev && !NON_FORWARD_CONNECTORS.has(prev.id);
+      const canCurrentConnectBackward =
+        current.value.final !== "—" && current.value.medial !== "—";
       const connectToPrev = canPrevConnectForward && canCurrentConnectBackward;
 
       const canCurrentConnectForward = !NON_FORWARD_CONNECTORS.has(current.id);
-      const canNextConnectBackward = next && next.value.final !== "—" && next.value.medial !== "—";
-      const connectToNext = next && canCurrentConnectForward && canNextConnectBackward;
+      const canNextConnectBackward =
+        next && next.value.final !== "—" && next.value.medial !== "—";
+      const connectToNext =
+        next && canCurrentConnectForward && canNextConnectBackward;
 
-      if (!connectToPrev && !connectToNext) return getShape(current, 'isolated');
-      if (connectToPrev && !connectToNext) return getShape(current, 'final');
-      if (!connectToPrev && connectToNext) return getShape(current, 'initial');
-      return getShape(current, 'medial');
+      if (!connectToPrev && !connectToNext)
+        return getShape(current, "isolated");
+      if (connectToPrev && !connectToNext) return getShape(current, "final");
+      if (!connectToPrev && connectToNext) return getShape(current, "initial");
+      return getShape(current, "medial");
     });
   };
 
@@ -434,19 +476,22 @@ export default function App() {
 
       const groups: TokenGroup[] = [];
       let currentGroup: (KeyItem | string)[] = [];
-      let currentType: 'keys' | 'text' | null = null;
+      let currentType: "keys" | "text" | null = null;
 
-      const pushGroup = (type: 'keys' | 'text', content: (KeyItem | string)[]) => {
-        if (type === 'keys') {
-          groups.push({ type: 'keys', content: content as KeyItem[] });
+      const pushGroup = (
+        type: "keys" | "text",
+        content: (KeyItem | string)[],
+      ) => {
+        if (type === "keys") {
+          groups.push({ type: "keys", content: content as KeyItem[] });
         } else {
-          groups.push({ type: 'text', content: content as string[] });
+          groups.push({ type: "text", content: content as string[] });
         }
       };
 
       for (const token of allTokens) {
-        const isKey = typeof token !== 'string';
-        const type = isKey ? 'keys' : 'text';
+        const isKey = typeof token !== "string";
+        const type = isKey ? "keys" : "text";
 
         if (type !== currentType) {
           if (currentType && currentGroup.length > 0) {
@@ -464,8 +509,8 @@ export default function App() {
 
       let tokenCounter = 0;
 
-      groups.forEach(group => {
-        if (group.type === 'text') {
+      groups.forEach((group) => {
+        if (group.type === "text") {
           const str = group.content.join("");
           resultString += str;
           const len = group.content.length;
@@ -493,7 +538,6 @@ export default function App() {
       });
 
       return { text: resultString, cursor: shapedLengthBeforeCursor };
-
     } catch (err) {
       console.error("Text processing error:", err);
       return { text: newRawText, cursor: cursorIndexInRaw };
@@ -506,7 +550,8 @@ export default function App() {
     const { text, cursor } = processTextChange(rawVal, cursorPos);
     setInputText(text);
     setTimeout(() => {
-      if (textareaRef.current) textareaRef.current.setSelectionRange(cursor, cursor);
+      if (textareaRef.current)
+        textareaRef.current.setSelectionRange(cursor, cursor);
     }, 0);
   };
 
@@ -516,7 +561,8 @@ export default function App() {
     const start = textarea.selectionStart;
     const end = textarea.selectionEnd;
     const rawInserted = key.value.isolated;
-    const newRawText = inputText.substring(0, start) + rawInserted + inputText.substring(end);
+    const newRawText =
+      inputText.substring(0, start) + rawInserted + inputText.substring(end);
     const newRawCursorIndex = start + rawInserted.length;
     const { text, cursor } = processTextChange(newRawText, newRawCursorIndex);
     setInputText(text);
@@ -536,19 +582,41 @@ export default function App() {
     }
   };
 
+  const adjustFontSize = (delta: number) => {
+    setFontSize((prev) => Math.max(12, Math.min(120, prev + delta)));
+  };
+
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans p-4 md:p-8">
       <div className="max-w-6xl mx-auto space-y-6">
-
         <main className="flex flex-col gap-6">
-
           <div className="lg:col-span-2 space-y-3">
             <div className="flex items-center justify-between">
               <label className="text-sm font-semibold text-slate-700 flex items-center gap-2">
                 <Type size={16} />
                 Результат
               </label>
-              <div className="flex gap-2">
+              <div className="flex gap-2 items-center">
+                <div className="flex items-center gap-1 bg-white border border-slate-300 rounded px-1 py-0.5 mr-2">
+                  <button
+                    onClick={() => adjustFontSize(-2)}
+                    className="p-1 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded"
+                    title="Уменьшить шрифт"
+                  >
+                    <Minus size={14} />
+                  </button>
+                  <span className="text-xs font-mono w-8 text-center text-slate-600 select-none">
+                    {fontSize}
+                  </span>
+                  <button
+                    onClick={() => adjustFontSize(2)}
+                    className="p-1 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded"
+                    title="Увеличить шрифт"
+                  >
+                    <Plus size={14} />
+                  </button>
+                </div>
+
                 <button
                   onClick={handleClear}
                   className="text-xs flex items-center gap-1 text-slate-500 hover:text-red-600 px-2 py-1 rounded hover:bg-red-50 transition-colors"
@@ -568,9 +636,10 @@ export default function App() {
               ref={textareaRef}
               value={inputText}
               onChange={handleChange}
+              style={{ fontSize: `${fontSize}px` }}
               placeholder="Нажимайте кнопки ниже или печатайте здесь..."
-              className="w-full h-64 lg:h-[300px] p-4 bg-white border border-slate-300 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none resize-none font-mono text-lg leading-relaxed text-slate-800"
-              dir='rtl'
+              className="w-full h-64 lg:h-[300px] p-4 bg-white border border-slate-300 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none resize-none font-mono leading-relaxed text-slate-800"
+              dir="rtl"
             />
           </div>
 
@@ -578,7 +647,9 @@ export default function App() {
             <div className="bg-slate-200/50 p-4 rounded-xl border border-slate-200 h-full flex flex-col">
               <div className="mb-4 flex items-center justify-between">
                 <h2 className="font-semibold text-slate-700">Клавиши</h2>
-                <span className="text-xs bg-slate-300 text-slate-700 px-2 py-0.5 rounded-full">{keys.length}</span>
+                <span className="text-xs bg-slate-300 text-slate-700 px-2 py-0.5 rounded-full">
+                  {keys.length}
+                </span>
               </div>
 
               <div className="flex-1 grid gap-3 grid-cols-5 sm:grid-cols-6 md:grid-cols-7 lg:grid-cols-8 xl:grid-cols-10">
@@ -590,16 +661,21 @@ export default function App() {
                       title={`Вставит: ${key.value.isolated}`}
                       className="flex-1 group relative flex flex-col items-center justify-center p-1 md:p-2 bg-white hover:bg-blue-50 active:bg-blue-100 border-b-2 md:border-b-4 border-slate-300 active:border-b-0 active:translate-y-0.5 md:active:translate-y-1 rounded md:rounded-lg transition-all duration-100 text-center min-w-[36px] md:min-w-0"
                     >
-                      <span className='absolute top-0.5 left-0.5 md:top-1 md:left-1 text-[8px] md:text-[10px] text-slate-300'>{key.id}</span>
-                      <span className='font-normal text-2xl md:text-3xl my-1 md:my-2'>{key.value.isolated}</span>
-                      <span className="font-medium text-slate-500 break-all leading-tight text-sm">{key.label}</span>
+                      <span className="absolute top-0.5 left-0.5 md:top-1 md:left-1 text-[8px] md:text-[10px] text-slate-300">
+                        {key.id}
+                      </span>
+                      <span className="font-normal text-2xl md:text-3xl my-1 md:my-2">
+                        {key.value.isolated}
+                      </span>
+                      <span className="font-medium text-slate-500 break-all leading-tight text-sm">
+                        {key.label}
+                      </span>
                     </button>
-                  )
+                  );
                 })}
               </div>
             </div>
           </div>
-
         </main>
       </div>
     </div>
