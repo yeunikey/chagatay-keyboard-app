@@ -1,7 +1,16 @@
 "use client";
 
-import { useState, useRef, useMemo } from "react";
-import { Type, Copy, RotateCcw, Minus, Plus } from "lucide-react";
+import { useState, useRef, useMemo, useEffect } from "react";
+import {
+  Type,
+  Copy,
+  RotateCcw,
+  Minus,
+  Plus,
+  Bookmark,
+  Trash2,
+  ArrowDownToLine,
+} from "lucide-react";
 
 type KeyItem = {
   id: number;
@@ -18,6 +27,12 @@ type TokenGroup =
   | { type: "keys"; content: KeyItem[] }
   | { type: "text"; content: string[] };
 
+type SavedBookmark = {
+  id: string;
+  name: string;
+  text: string;
+};
+
 const NON_FORWARD_CONNECTORS = new Set([
   1, 2, 9, 10, 11, 12, 28, 30, 31, 32, 33, 34, 35, 100, 101, 102, 103, 104, 105,
   106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119,
@@ -26,6 +41,21 @@ const NON_FORWARD_CONNECTORS = new Set([
 export default function App() {
   const [inputText, setInputText] = useState("");
   const [fontSize, setFontSize] = useState(32);
+  const [showBookmarks, setShowBookmarks] = useState(false);
+
+  const [bookmarks, setBookmarks] = useState<SavedBookmark[]>(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("arabic_bookmarks");
+      if (saved) {
+        return JSON.parse(saved) as SavedBookmark[];
+      }
+    }
+    return [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem("arabic_bookmarks", JSON.stringify(bookmarks));
+  }, [bookmarks]);
 
   const [keys, setKeys] = useState<KeyItem[]>([
     {
@@ -480,6 +510,41 @@ export default function App() {
     setFontSize((prev) => Math.max(12, Math.min(120, prev + delta)));
   };
 
+  const handleAddBookmark = () => {
+    if (!inputText.trim()) return;
+    const name = window.prompt("Введите название закладки:");
+    if (name) {
+      setBookmarks((prev) => [
+        ...prev,
+        { id: Date.now().toString(), name, text: inputText },
+      ]);
+    }
+  };
+
+  const handleDeleteBookmark = (id: string) => {
+    setBookmarks((prev) => prev.filter((b) => b.id !== id));
+  };
+
+  const handleCopyBookmark = (text: string) => {
+    navigator.clipboard.writeText(text);
+  };
+
+  const handleInsertBookmark = (textToInsert: string) => {
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const newRawText =
+      inputText.substring(0, start) + textToInsert + inputText.substring(end);
+    const newRawCursorIndex = start + textToInsert.length;
+    const { text, cursor } = processTextChange(newRawText, newRawCursorIndex);
+    setInputText(text);
+    setTimeout(() => {
+      textarea.focus();
+      textarea.setSelectionRange(cursor, cursor);
+    }, 0);
+  };
+
   const renderKeyButton = (key: KeyItem, i: number) => (
     <button
       key={key.id}
@@ -500,17 +565,96 @@ export default function App() {
   );
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans p-4 md:p-3">
-      <div className="max-w-7xl mx-auto space-y-3">
-        <main className="flex flex-col gap-3">
-          <div className="lg:col-span-2 space-y-3">
+    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans p-4 md:px-12 md:py-6">
+      <div
+        className={`mx-auto grid grid-cols-1 ${showBookmarks ? "max-w-dvw lg:grid-cols-4" : "max-w-7xl lg:grid-cols-1"} gap-4 items-start`}
+      >
+        {showBookmarks && (
+          <aside className="order-2 lg:order-1 lg:col-span-1 flex flex-col h-[300px] lg:h-[calc(100vh-3rem)] lg:sticky lg:top-6 space-y-3">
+            <div className="bg-slate-200/50 p-4 rounded-xl border border-slate-200 flex-1 flex flex-col min-h-0">
+              <h2 className="font-semibold text-slate-700 mb-4 flex items-center gap-2 shrink-0">
+                Закладки
+              </h2>
+              <div className="flex-1 overflow-y-auto space-y-3 pr-1 custom-scrollbar">
+                {bookmarks.length === 0 ? (
+                  <p className="text-sm text-slate-500 italic">Нет закладок</p>
+                ) : (
+                  bookmarks.map((b) => (
+                    <div
+                      key={b.id}
+                      className="bg-white p-3 rounded-lg border border-slate-300 shadow-sm flex flex-col gap-2 transition-all"
+                    >
+                      <div className="flex justify-between items-start gap-2">
+                        <span className="font-semibold text-sm text-slate-800 truncate">
+                          {b.name}
+                        </span>
+                      </div>
+                      <div
+                        className="text-right text-lg font-mono text-slate-700 bg-slate-50 p-2 rounded border border-slate-100 break-words"
+                        dir="rtl"
+                      >
+                        {b.text}
+                      </div>
+                      <div className="flex justify-end gap-1 mt-1">
+                        <button
+                          onClick={() => handleInsertBookmark(b.text)}
+                          className="text-xs flex items-center justify-center p-1.5 text-blue-600 hover:bg-blue-50 rounded"
+                          title="Вставить"
+                        >
+                          <ArrowDownToLine size={14} />
+                        </button>
+                        <button
+                          onClick={() => handleCopyBookmark(b.text)}
+                          className="text-xs flex items-center justify-center p-1.5 text-slate-600 hover:bg-slate-100 rounded"
+                          title="Копировать"
+                        >
+                          <Copy size={14} />
+                        </button>
+                        <button
+                          onClick={() => handleDeleteBookmark(b.id)}
+                          className="text-xs flex items-center justify-center p-1.5 text-red-500 hover:bg-red-50 rounded"
+                          title="Удалить"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+          </aside>
+        )}
+
+        <main
+          className={`order-1 lg:order-2 flex flex-col gap-3 ${showBookmarks ? "lg:col-span-3" : "lg:col-span-1"}`}
+        >
+          <div className="space-y-3">
             <div className="flex items-center justify-between">
               <label className="text-sm font-semibold text-slate-700 flex items-center gap-2">
                 <Type size={16} />
                 Результат
               </label>
-              <div className="flex gap-2 items-center">
-                <div className="flex items-center gap-1 bg-white border border-slate-300 rounded px-1 py-0.5 mr-2">
+              <div className="flex gap-2 items-center flex-wrap justify-end">
+                <button
+                  onClick={() => setShowBookmarks((prev) => !prev)}
+                  className="mr-auto text-xs flex items-center gap-1 text-slate-700 bg-slate-200 hover:bg-slate-300 px-3 py-1.5 rounded transition-colors font-medium"
+                >
+                  <Bookmark
+                    size={12}
+                    className={showBookmarks ? "fill-current" : ""}
+                  />
+                  {showBookmarks ? "Скрыть закладки" : "Мои закладки"}
+                </button>
+
+                <button
+                  onClick={handleAddBookmark}
+                  className="text-xs flex items-center gap-1 text-orange-600 hover:text-orange-700 bg-orange-50 hover:bg-orange-100 px-3 py-1.5 rounded transition-colors font-medium"
+                >
+                  <Bookmark size={12} /> В закладки
+                </button>
+
+                <div className="flex items-center gap-1 bg-white border border-slate-300 rounded px-1 py-0.5">
                   <button
                     onClick={() => adjustFontSize(-2)}
                     className="p-1 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded"
@@ -532,13 +676,13 @@ export default function App() {
 
                 <button
                   onClick={handleClear}
-                  className="text-xs flex items-center gap-1 text-slate-500 hover:text-red-600 px-2 py-1 rounded hover:bg-red-50 transition-colors"
+                  className="text-xs flex items-center gap-1 text-slate-500 hover:text-red-600 px-2 py-1.5 rounded hover:bg-red-50 transition-colors"
                 >
                   <RotateCcw size={12} /> Очистить
                 </button>
                 <button
                   onClick={handleCopy}
-                  className="text-xs flex items-center gap-1 text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 px-3 py-1 rounded transition-colors font-medium"
+                  className="text-xs flex items-center gap-1 text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded transition-colors font-medium"
                 >
                   <Copy size={12} /> Копировать
                 </button>
@@ -556,7 +700,7 @@ export default function App() {
             />
           </div>
 
-          <div className="bg-slate-200/50 p-4 rounded-xl border border-slate-200 h-full flex flex-col space-y-6">
+          <div className="bg-slate-200/50 p-4 rounded-xl border border-slate-200 flex-1 flex flex-col space-y-6">
             <div>
               <div className="mb-4 flex items-center justify-between">
                 <h2 className="font-semibold text-slate-700">Клавиши</h2>
