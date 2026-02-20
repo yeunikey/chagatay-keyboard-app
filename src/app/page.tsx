@@ -19,9 +19,8 @@ type TokenGroup =
   | { type: "text"; content: string[] };
 
 const NON_FORWARD_CONNECTORS = new Set([
-  1, 2, 9, 10, 11, 12, 28, 30, 31, 32, 33, 34, 35,
-  100, 101, 102, 103, 104, 105, 106, 107, 108, 109,
-  110, 111, 112, 113, 114, 115, 116, 117, 118, 119
+  1, 2, 9, 10, 11, 12, 28, 30, 31, 32, 33, 34, 35, 100, 101, 102, 103, 104, 105,
+  106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119,
 ]);
 
 export default function App() {
@@ -29,58 +28,269 @@ export default function App() {
   const [fontSize, setFontSize] = useState(32);
 
   const [keys, setKeys] = useState<KeyItem[]>([
-    { id: 2, label: "алиф", value: { isolated: "ا", final: "ﺎ", medial: "—", initial: "—" } },
-    { id: 32, label: "алиф хамза", value: { isolated: "أ", final: "ﺄ", medial: "—", initial: "—" } },
-    { id: 34, label: "алиф мадда", value: { isolated: "آ", final: "ﺂ", medial: "—", initial: "—" } },
-    { id: 1, label: "хамза", value: { isolated: "ء", final: "—", medial: "—", initial: "—" } },
-    { id: 3, label: "бә", value: { isolated: "ب", final: "ﺐ", medial: "ﺒ", initial: "ﺑ" } },
-    { id: 4, label: "тә", value: { isolated: "ت", final: "ﺖ", medial: "ﺘ", initial: "ﺗ" } },
-    { id: 5, label: "цә", value: { isolated: "ث", final: "ﺚ", medial: "ﺜ", initial: "ﺛ" } },
-    { id: 6, label: "жим", value: { isolated: "ج", final: "ﺞ", medial: "ﺠ", initial: "ﺟ" } },
-    { id: 7, label: "ха", value: { isolated: "ح", final: "ﺢ", medial: "ﺤ", initial: "ﺣ" } },
-    { id: 8, label: "хо", value: { isolated: "خ", final: "ﺦ", medial: "ﺨ", initial: "ﺧ" } },
-    { id: 9, label: "дәл", value: { isolated: "د", final: "ﺪ", medial: "—", initial: "—" } },
-    { id: 10, label: "зәл", value: { isolated: "ذ", final: "ﺬ", medial: "—", initial: "—" } },
-    { id: 11, label: "ра", value: { isolated: "ر", final: "ﺮ", medial: "—", initial: "—" } },
-    { id: 12, label: "зәй", value: { isolated: "ز", final: "ﺰ", medial: "—", initial: "—" } },
-    { id: 13, label: "син", value: { isolated: "س", final: "ﺲ", medial: "ﺴ", initial: "ﺳ" } },
-    { id: 14, label: "шин", value: { isolated: "ش", final: "ﺶ", medial: "ﺸ", initial: "ﺷ" } },
-    { id: 15, label: "сад", value: { isolated: "ص", final: "ﺺ", medial: "ﺼ", initial: "ﺻ" } },
-    { id: 16, label: "дад", value: { isolated: "ض", final: "ﺾ", medial: "ﻀ", initial: "ﺿ" } },
-    { id: 17, label: "та", value: { isolated: "ط", final: "ﻂ", medial: "ﻄ", initial: "ﻃ" } },
-    { id: 18, label: "за", value: { isolated: "ظ", final: "ﻆ", medial: "ﻈ", initial: "ﻇ" } },
-    { id: 19, label: "ъайн", value: { isolated: "ع", final: "ﻊ", medial: "ﻌ", initial: "ﻋ" } },
-    { id: 20, label: "ғайн", value: { isolated: "غ", final: "ﻎ", medial: "ﻐ", initial: "ﻏ" } },
-    { id: 21, label: "фә", value: { isolated: "ف", final: "ﻒ", medial: "ﻔ", initial: "ﻓ" } },
-    { id: 22, label: "қаф", value: { isolated: "ق", final: "ﻖ", medial: "ﻘ", initial: "ﻗ" } },
-    { id: 23, label: "кәф", value: { isolated: "ك", final: "ﻚ", medial: "ﻜ", initial: "ﻛ" } },
-    { id: 24, label: "ләм", value: { isolated: "ل", final: "ﻞ", medial: "ﻠ", initial: "ﻟ" } },
-    { id: 25, label: "мим", value: { isolated: "م", final: "ﻢ", medial: "ﻤ", initial: "ﻣ" } },
-    { id: 26, label: "нун", value: { isolated: "ن", final: "ﻦ", medial: "ﻨ", initial: "ﻧ" } },
-    { id: 27, label: "һә", value: { isolated: "ه", final: "ﻪ", medial: "ﻬ", initial: "ﻫ" } },
-    { id: 28, label: "уау", value: { isolated: "و", final: "ﻮ", medial: "—", initial: "—" } },
-    { id: 29, label: "йә", value: { isolated: "ي", final: "ﻲ", medial: "ﻴ", initial: "ﻳ" } },
-    { id: 100, label: "0 (ар)", value: { isolated: "٠", final: "—", medial: "—", initial: "—" } },
-    { id: 101, label: "1 (ар)", value: { isolated: "١", final: "—", medial: "—", initial: "—" } },
-    { id: 102, label: "2 (ар)", value: { isolated: "٢", final: "—", medial: "—", initial: "—" } },
-    { id: 103, label: "3 (ар)", value: { isolated: "٣", final: "—", medial: "—", initial: "—" } },
-    { id: 104, label: "4 (ар)", value: { isolated: "٤", final: "—", medial: "—", initial: "—" } },
-    { id: 105, label: "5 (ар)", value: { isolated: "٥", final: "—", medial: "—", initial: "—" } },
-    { id: 106, label: "6 (ар)", value: { isolated: "٦", final: "—", medial: "—", initial: "—" } },
-    { id: 107, label: "7 (ар)", value: { isolated: "٧", final: "—", medial: "—", initial: "—" } },
-    { id: 108, label: "8 (ар)", value: { isolated: "٨", final: "—", medial: "—", initial: "—" } },
-    { id: 109, label: "9 (ар)", value: { isolated: "٩", final: "—", medial: "—", initial: "—" } },
-    { id: 110, label: "0 (фар)", value: { isolated: "۰", final: "—", medial: "—", initial: "—" } },
-    { id: 111, label: "1 (фар)", value: { isolated: "۱", final: "—", medial: "—", initial: "—" } },
-    { id: 112, label: "2 (фар)", value: { isolated: "۲", final: "—", medial: "—", initial: "—" } },
-    { id: 113, label: "3 (фар)", value: { isolated: "۳", final: "—", medial: "—", initial: "—" } },
-    { id: 114, label: "4 (фар)", value: { isolated: "۴", final: "—", medial: "—", initial: "—" } },
-    { id: 115, label: "5 (фар)", value: { isolated: "۵", final: "—", medial: "—", initial: "—" } },
-    { id: 116, label: "6 (фар)", value: { isolated: "۶", final: "—", medial: "—", initial: "—" } },
-    { id: 117, label: "7 (фар)", value: { isolated: "۷", final: "—", medial: "—", initial: "—" } },
-    { id: 118, label: "8 (фар)", value: { isolated: "۸", final: "—", medial: "—", initial: "—" } },
-    { id: 119, label: "9 (фар)", value: { isolated: "۹", final: "—", medial: "—", initial: "—" } },
+    {
+      id: 2,
+      label: "алиф",
+      value: { isolated: "ا", final: "ﺎ", medial: "—", initial: "—" },
+    },
+    {
+      id: 32,
+      label: "алиф хамза",
+      value: { isolated: "أ", final: "ﺄ", medial: "—", initial: "—" },
+    },
+    {
+      id: 34,
+      label: "алиф мадда",
+      value: { isolated: "آ", final: "ﺂ", medial: "—", initial: "—" },
+    },
+    {
+      id: 1,
+      label: "хамза",
+      value: { isolated: "ء", final: "—", medial: "—", initial: "—" },
+    },
+    {
+      id: 3,
+      label: "бә",
+      value: { isolated: "ب", final: "ﺐ", medial: "ﺒ", initial: "ﺑ" },
+    },
+    {
+      id: 4,
+      label: "тә",
+      value: { isolated: "ت", final: "ﺖ", medial: "ﺘ", initial: "ﺗ" },
+    },
+    {
+      id: 5,
+      label: "цә",
+      value: { isolated: "ث", final: "ﺚ", medial: "ﺜ", initial: "ﺛ" },
+    },
+    {
+      id: 6,
+      label: "жим",
+      value: { isolated: "ج", final: "ﺞ", medial: "ﺠ", initial: "ﺟ" },
+    },
+    {
+      id: 7,
+      label: "ха",
+      value: { isolated: "ح", final: "ﺢ", medial: "ﺤ", initial: "ﺣ" },
+    },
+    {
+      id: 8,
+      label: "хо",
+      value: { isolated: "خ", final: "ﺦ", medial: "ﺨ", initial: "ﺧ" },
+    },
+    {
+      id: 9,
+      label: "дәл",
+      value: { isolated: "د", final: "ﺪ", medial: "—", initial: "—" },
+    },
+    {
+      id: 10,
+      label: "зәл",
+      value: { isolated: "ذ", final: "ﺬ", medial: "—", initial: "—" },
+    },
+    {
+      id: 11,
+      label: "ра",
+      value: { isolated: "ر", final: "ﺮ", medial: "—", initial: "—" },
+    },
+    {
+      id: 12,
+      label: "зәй",
+      value: { isolated: "ز", final: "ﺰ", medial: "—", initial: "—" },
+    },
+    {
+      id: 13,
+      label: "син",
+      value: { isolated: "س", final: "ﺲ", medial: "ﺴ", initial: "ﺳ" },
+    },
+    {
+      id: 14,
+      label: "шин",
+      value: { isolated: "ش", final: "ﺶ", medial: "ﺸ", initial: "ﺷ" },
+    },
+    {
+      id: 15,
+      label: "сад",
+      value: { isolated: "ص", final: "ﺺ", medial: "ﺼ", initial: "ﺻ" },
+    },
+    {
+      id: 16,
+      label: "дад",
+      value: { isolated: "ض", final: "ﺾ", medial: "ﻀ", initial: "ﺿ" },
+    },
+    {
+      id: 17,
+      label: "та",
+      value: { isolated: "ط", final: "ﻂ", medial: "ﻄ", initial: "ﻃ" },
+    },
+    {
+      id: 18,
+      label: "за",
+      value: { isolated: "ظ", final: "ﻆ", medial: "ﻈ", initial: "ﻇ" },
+    },
+    {
+      id: 19,
+      label: "ъайн",
+      value: { isolated: "ع", final: "ﻊ", medial: "ﻌ", initial: "ﻋ" },
+    },
+    {
+      id: 20,
+      label: "ғайн",
+      value: { isolated: "غ", final: "ﻎ", medial: "ﻐ", initial: "ﻏ" },
+    },
+    {
+      id: 21,
+      label: "фә",
+      value: { isolated: "ف", final: "ﻒ", medial: "ﻔ", initial: "ﻓ" },
+    },
+    {
+      id: 22,
+      label: "қаф",
+      value: { isolated: "ق", final: "ﻖ", medial: "ﻘ", initial: "ﻗ" },
+    },
+    {
+      id: 23,
+      label: "кәф",
+      value: { isolated: "ك", final: "ﻚ", medial: "ﻜ", initial: "ﻛ" },
+    },
+    {
+      id: 24,
+      label: "ләм",
+      value: { isolated: "ل", final: "ﻞ", medial: "ﻠ", initial: "ﻟ" },
+    },
+    {
+      id: 25,
+      label: "мим",
+      value: { isolated: "م", final: "ﻢ", medial: "ﻤ", initial: "ﻣ" },
+    },
+    {
+      id: 26,
+      label: "нун",
+      value: { isolated: "ن", final: "ﻦ", medial: "ﻨ", initial: "ﻧ" },
+    },
+    {
+      id: 27,
+      label: "һә",
+      value: { isolated: "ه", final: "ﻪ", medial: "ﻬ", initial: "ﻫ" },
+    },
+    {
+      id: 28,
+      label: "уау",
+      value: { isolated: "و", final: "ﻮ", medial: "—", initial: "—" },
+    },
+    {
+      id: 29,
+      label: "йә",
+      value: { isolated: "ي", final: "ﻲ", medial: "ﻴ", initial: "ﻳ" },
+    },
+    {
+      id: 100,
+      label: "0",
+      value: { isolated: "٠", final: "—", medial: "—", initial: "—" },
+    },
+    {
+      id: 101,
+      label: "1",
+      value: { isolated: "١", final: "—", medial: "—", initial: "—" },
+    },
+    {
+      id: 102,
+      label: "2",
+      value: { isolated: "٢", final: "—", medial: "—", initial: "—" },
+    },
+    {
+      id: 103,
+      label: "3",
+      value: { isolated: "٣", final: "—", medial: "—", initial: "—" },
+    },
+    {
+      id: 104,
+      label: "4",
+      value: { isolated: "٤", final: "—", medial: "—", initial: "—" },
+    },
+    {
+      id: 105,
+      label: "5",
+      value: { isolated: "٥", final: "—", medial: "—", initial: "—" },
+    },
+    {
+      id: 106,
+      label: "6",
+      value: { isolated: "٦", final: "—", medial: "—", initial: "—" },
+    },
+    {
+      id: 107,
+      label: "7",
+      value: { isolated: "٧", final: "—", medial: "—", initial: "—" },
+    },
+    {
+      id: 108,
+      label: "8",
+      value: { isolated: "٨", final: "—", medial: "—", initial: "—" },
+    },
+    {
+      id: 109,
+      label: "9",
+      value: { isolated: "٩", final: "—", medial: "—", initial: "—" },
+    },
+    {
+      id: 110,
+      label: "0",
+      value: { isolated: "۰", final: "—", medial: "—", initial: "—" },
+    },
+    {
+      id: 111,
+      label: "1",
+      value: { isolated: "۱", final: "—", medial: "—", initial: "—" },
+    },
+    {
+      id: 112,
+      label: "2",
+      value: { isolated: "۲", final: "—", medial: "—", initial: "—" },
+    },
+    {
+      id: 113,
+      label: "3",
+      value: { isolated: "۳", final: "—", medial: "—", initial: "—" },
+    },
+    {
+      id: 114,
+      label: "4",
+      value: { isolated: "۴", final: "—", medial: "—", initial: "—" },
+    },
+    {
+      id: 115,
+      label: "5",
+      value: { isolated: "۵", final: "—", medial: "—", initial: "—" },
+    },
+    {
+      id: 116,
+      label: "6",
+      value: { isolated: "۶", final: "—", medial: "—", initial: "—" },
+    },
+    {
+      id: 117,
+      label: "7",
+      value: { isolated: "۷", final: "—", medial: "—", initial: "—" },
+    },
+    {
+      id: 118,
+      label: "8",
+      value: { isolated: "۸", final: "—", medial: "—", initial: "—" },
+    },
+    {
+      id: 119,
+      label: "9",
+      value: { isolated: "۹", final: "—", medial: "—", initial: "—" },
+    },
   ]);
+
+  const letters = useMemo(() => keys.filter((k) => k.id < 100), [keys]);
+  const arabicDigits = useMemo(
+    () => keys.filter((k) => k.id >= 100 && k.id < 110),
+    [keys],
+  );
+  const farsiDigits = useMemo(() => keys.filter((k) => k.id >= 110), [keys]);
 
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
@@ -270,10 +480,29 @@ export default function App() {
     setFontSize((prev) => Math.max(12, Math.min(120, prev + delta)));
   };
 
+  const renderKeyButton = (key: KeyItem, i: number) => (
+    <button
+      key={key.id}
+      onClick={() => handleKeyClick(key)}
+      title={`Вставит: ${key.value.isolated}`}
+      className="flex-1 group relative flex flex-col items-center justify-center p-1 md:p-2 bg-white hover:bg-blue-50 active:bg-blue-100 border-b-2 md:border-b-4 border-slate-300 active:border-b-0 active:translate-y-0.5 md:active:translate-y-1 rounded md:rounded-lg transition-all duration-100 text-center min-w-[36px] md:min-w-0"
+    >
+      <span className="absolute top-0.5 right-0.5 md:top-1 md:right-1 text-[8px] md:text-[10px] text-slate-300">
+        {i + 1}
+      </span>
+      <span className="font-normal text-2xl md:text-3xl my-1 md:my-2">
+        {key.value.isolated}
+      </span>
+      <span className="font-medium text-slate-500 break-all leading-tight text-sm">
+        {key.label}
+      </span>
+    </button>
+  );
+
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans p-4 md:p-8">
-      <div className="max-w-6xl mx-auto space-y-6">
-        <main className="flex flex-col gap-6">
+    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans p-4 md:p-3">
+      <div className="max-w-7xl mx-auto space-y-3">
+        <main className="flex flex-col gap-3">
           <div className="lg:col-span-2 space-y-3">
             <div className="flex items-center justify-between">
               <label className="text-sm font-semibold text-slate-700 flex items-center gap-2">
@@ -322,41 +551,50 @@ export default function App() {
               onChange={handleChange}
               style={{ fontSize: `${fontSize}px` }}
               placeholder="Нажимайте кнопки ниже или печатайте здесь..."
-              className="w-full h-64 lg:h-[300px] p-4 bg-white border border-slate-300 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none resize-none font-mono leading-relaxed text-slate-800"
+              className="w-full h-36 lg:h-[200px] p-4 bg-white border border-slate-300 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none resize-none font-mono leading-relaxed text-slate-800"
               dir="rtl"
             />
           </div>
 
-          <div className="">
-            <div className="bg-slate-200/50 p-4 rounded-xl border border-slate-200 h-full flex flex-col">
+          <div className="bg-slate-200/50 p-4 rounded-xl border border-slate-200 h-full flex flex-col space-y-6">
+            <div>
               <div className="mb-4 flex items-center justify-between">
                 <h2 className="font-semibold text-slate-700">Клавиши</h2>
                 <span className="text-xs bg-slate-300 text-slate-700 px-2 py-0.5 rounded-full">
-                  {keys.length}
+                  {letters.length}
                 </span>
               </div>
+              <div
+                className="grid gap-3 grid-cols-5 sm:grid-cols-6 md:grid-cols-7 lg:grid-cols-8 xl:grid-cols-11"
+                dir="rtl"
+              >
+                {letters.map((key, i) => renderKeyButton(key, i))}
+              </div>
+            </div>
 
-              <div className="flex-1 grid gap-3 grid-cols-5 sm:grid-cols-6 md:grid-cols-7 lg:grid-cols-8 xl:grid-cols-10" dir="rtl">
-                {keys.map((key, i) => {
-                  return (
-                    <button
-                      key={key.id}
-                      onClick={() => handleKeyClick(key)}
-                      title={`Вставит: ${key.value.isolated}`}
-                      className="flex-1 group relative flex flex-col items-center justify-center p-1 md:p-2 bg-white hover:bg-blue-50 active:bg-blue-100 border-b-2 md:border-b-4 border-slate-300 active:border-b-0 active:translate-y-0.5 md:active:translate-y-1 rounded md:rounded-lg transition-all duration-100 text-center min-w-[36px] md:min-w-0"
-                    >
-                      <span className="absolute top-0.5 right-0.5 md:top-1 md:right-1 text-[8px] md:text-[10px] text-slate-300">
-                        {i + 1}
-                      </span>
-                      <span className="font-normal text-2xl md:text-3xl my-1 md:my-2">
-                        {key.value.isolated}
-                      </span>
-                      <span className="font-medium text-slate-500 break-all leading-tight text-sm">
-                        {key.label}
-                      </span>
-                    </button>
-                  );
-                })}
+            <div className="border-t border-slate-300 pt-3">
+              <div className="mb-4 flex items-center justify-between">
+                <h2 className="font-semibold text-slate-700">Арабские цифры</h2>
+                <span className="text-xs bg-slate-300 text-slate-700 px-2 py-0.5 rounded-full">
+                  {arabicDigits.length}
+                </span>
+              </div>
+              <div className="grid gap-3 grid-cols-5 sm:grid-cols-10" dir="rtl">
+                {arabicDigits.map((key, i) => renderKeyButton(key, i))}
+              </div>
+            </div>
+
+            <div className="border-t border-slate-300 pt-3">
+              <div className="mb-4 flex items-center justify-between">
+                <h2 className="font-semibold text-slate-700">
+                  Персидские цифры
+                </h2>
+                <span className="text-xs bg-slate-300 text-slate-700 px-2 py-0.5 rounded-full">
+                  {farsiDigits.length}
+                </span>
+              </div>
+              <div className="grid gap-3 grid-cols-5 sm:grid-cols-10" dir="rtl">
+                {farsiDigits.map((key, i) => renderKeyButton(key, i))}
               </div>
             </div>
           </div>
