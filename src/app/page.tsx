@@ -18,393 +18,68 @@ type TokenGroup =
   | { type: "keys"; content: KeyItem[] }
   | { type: "text"; content: string[] };
 
-const NON_FORWARD_CONNECTORS = new Set([1, 2, 11, 12, 13, 14, 15, 32]);
+const NON_FORWARD_CONNECTORS = new Set([
+  1, 2, 9, 10, 11, 12, 28, 30, 31, 32, 33, 34, 35,
+  100, 101, 102, 103, 104, 105, 106, 107, 108, 109,
+  110, 111, 112, 113, 114, 115, 116, 117, 118, 119
+]);
 
 export default function App() {
   const [inputText, setInputText] = useState("");
   const [fontSize, setFontSize] = useState(32);
 
   const [keys, setKeys] = useState<KeyItem[]>([
-    {
-      id: 1,
-      label: "хамза",
-      value: {
-        isolated: "ﺀ",
-        final: "—",
-        medial: "—",
-        initial: "—",
-      },
-    },
-    {
-      id: 2,
-      label: "алиф",
-      value: {
-        isolated: "ﺍ",
-        final: "ﺎ",
-        medial: "ﺎ",
-        initial: "ﺍ",
-      },
-    },
-    {
-      id: 111,
-      label: "алиф",
-      value: {
-        isolated: "أ",
-        final: "ﺎ",
-        medial: "ﺎ",
-        initial: "ﺍ",
-      },
-    },
-    {
-      id: 3,
-      label: "бе",
-      value: {
-        isolated: "ﺏ",
-        final: "ﺐ",
-        medial: "ﺒ",
-        initial: "ﺑ",
-      },
-    },
-    {
-      id: 4,
-      label: "пе",
-      value: {
-        isolated: "ﭖ",
-        final: "ﭗ",
-        medial: "ﭙ",
-        initial: "ﭘ",
-      },
-    },
-    {
-      id: 5,
-      label: "те",
-      value: {
-        isolated: "ﺕ",
-        final: "ﺖ",
-        medial: "ﺘ",
-        initial: "ﺗ",
-      },
-    },
-    {
-      id: 6,
-      label: "се",
-      value: {
-        isolated: "ﺙ",
-        final: "ﺚ",
-        medial: "ﺜ",
-        initial: "ﺛ",
-      },
-    },
-    {
-      id: 7,
-      label: "жим",
-      value: {
-        isolated: "ﺝ",
-        final: "ﺞ",
-        medial: "ﺠ",
-        initial: "ﺟ",
-      },
-    },
-    {
-      id: 8,
-      label: "чим",
-      value: {
-        isolated: "ﭺ",
-        final: "ﭻ",
-        medial: "ﭽ",
-        initial: "ﭼ",
-      },
-    },
-    {
-      id: 9,
-      label: "х",
-      value: {
-        isolated: "ﺡ",
-        final: "ﺢ",
-        initial: "ﺤ",
-        medial: "ﺣ",
-      },
-    },
-    {
-      id: 10,
-      label: "хе",
-      value: {
-        isolated: "ﺥ",
-        final: "ﺦ",
-        medial: "ﺨ",
-        initial: "ﺧ",
-      },
-    },
-    {
-      id: 11,
-      label: "дол",
-      value: {
-        isolated: "ﺩ",
-        final: "ﺪ",
-        medial: "ﺪ",
-        initial: "ﺩ",
-      },
-    },
-    {
-      id: 12,
-      label: "зол",
-      value: {
-        isolated: "ﺫ",
-        final: "ﺬ",
-        medial: "ﺬ",
-        initial: "ﺫ",
-      },
-    },
-    {
-      id: 13,
-      label: "ре",
-      value: {
-        isolated: "ﺭ",
-        final: "ﺮ",
-        medial: "ﺮ",
-        initial: "ﺭ",
-      },
-    },
-    {
-      id: 14,
-      label: "зе",
-      value: {
-        isolated: "ﺯ",
-        final: "ﺰ",
-        medial: "ﺰ",
-        initial: "ﺯ",
-      },
-    },
-    {
-      id: 15,
-      label: "же",
-      value: {
-        isolated: "ﮊ",
-        final: "ﮋ",
-        medial: "ﮋ",
-        initial: "ﮊ",
-      },
-    },
-    {
-      id: 16,
-      label: "син",
-      value: {
-        isolated: "ﺱ",
-        final: "ﺲ",
-        medial: "ﺴ",
-        initial: "ﺳ",
-      },
-    },
-    {
-      id: 17,
-      label: "шин",
-      value: {
-        isolated: "ﺵ",
-        final: "ﺶ",
-        medial: "ﺸ",
-        initial: "ﺷ",
-      },
-    },
-    {
-      id: 18,
-      label: "сод",
-      value: {
-        isolated: "ﺹ",
-        final: "ﺺ",
-        medial: "ﺼ",
-        initial: "ﺻ",
-      },
-    },
-    {
-      id: 19,
-      label: "дод",
-      value: {
-        isolated: "ﺽ",
-        final: "ﺾ",
-        medial: "ﻀ",
-        initial: "ﺿ",
-      },
-    },
-    {
-      id: 20,
-      label: "то",
-      value: {
-        isolated: "ﻁ",
-        final: "ﻂ",
-        medial: "ﻃ",
-        initial: "ﻃ",
-      },
-    },
-    {
-      id: 21,
-      label: "зо",
-      value: {
-        isolated: "ﻅ",
-        final: "ﻅ",
-        medial: "ﻅ",
-        initial: "ﻅ",
-      },
-    },
-    {
-      id: 22,
-      label: "айн",
-      value: {
-        isolated: "ﻉ",
-        final: "ﻊ",
-        medial: "ﻌ",
-        initial: "ﻋ",
-      },
-    },
-    {
-      id: 23,
-      label: "ғайн",
-      value: {
-        isolated: "ﻍ",
-        final: "ﻎ",
-        medial: "ﻐ",
-        initial: "ﻏ",
-      },
-    },
-    {
-      id: 24,
-      label: "фе",
-      value: {
-        isolated: "ﻑ",
-        final: "ﻒ",
-        medial: "ﻔ",
-        initial: "ﻓ",
-      },
-    },
-    {
-      id: 25,
-      label: "қоф",
-      value: {
-        isolated: "ﻕ",
-        final: "ﻖ",
-        medial: "ﻘ",
-        initial: "ﻗ",
-      },
-    },
-    {
-      id: 37,
-      label: "кәф",
-      value: {
-        isolated: "ك",
-        final: "ـك",
-        medial: "ك",
-        initial: "ﻛ",
-      },
-    },
-    {
-      id: 38,
-      label: "кәф",
-      value: {
-        isolated: "ڭ",
-        final: "ـڭ",
-        medial: "ـڭـ",
-        initial: "ڭـ",
-      },
-    },
-    {
-      id: 26,
-      label: "коф",
-      value: {
-        isolated: "ک",
-        final: "ک",
-        medial: "ﻜ",
-        initial: "ﻛ",
-      },
-    },
-    {
-      id: 27,
-      label: "гоф",
-      value: {
-        isolated: "ﮒ",
-        final: "ﮓ",
-        medial: "ﮕ",
-        initial: "ﮔ",
-      },
-    },
-    {
-      id: 28,
-      label: "ң",
-      value: {
-        isolated: "ݣ",
-        final: "ـݣ",
-        medial: "ـݣـ",
-        initial: "ݣـ",
-      },
-    },
-    {
-      id: 29,
-      label: "лам",
-      value: {
-        isolated: "ﻝ",
-        final: "ﻝ",
-        medial: "ﻠ",
-        initial: "ﻟ",
-      },
-    },
-    {
-      id: 30,
-      label: "мим",
-      value: {
-        isolated: "ﻡ",
-        final: "ﻢ",
-        medial: "ﻤ",
-        initial: "ﻣ",
-      },
-    },
-    {
-      id: 31,
-      label: "нун",
-      value: {
-        isolated: "ﻥ",
-        final: "ﻥ",
-        medial: "ﻨ",
-        initial: "ﻧ",
-      },
-    },
-    {
-      id: 32,
-      label: "уау",
-      value: {
-        isolated: "ﻭ",
-        final: "ﻮ",
-        medial: "ﻮ",
-        initial: "ﻭ",
-      },
-    },
-    {
-      id: 33,
-      label: "хавваз",
-      value: {
-        isolated: "ﻩ",
-        final: "ﻪ",
-        medial: "ﻬ",
-        initial: "ﻫ",
-      },
-    },
-    {
-      id: 34,
-      label: "йе",
-      value: {
-        isolated: "ﻯ",
-        final: "ﻰ",
-        medial: "ﻴ",
-        initial: "ﻳ",
-      },
-    },
-    {
-      id: 35,
-      label: "йе",
-      value: {
-        isolated: "ﻯ",
-        final: "ﻰ",
-        medial: "ﻴ",
-        initial: "ﻳ",
-      },
-    },
+    { id: 2, label: "алиф", value: { isolated: "ا", final: "ﺎ", medial: "—", initial: "—" } },
+    { id: 32, label: "алиф хамза", value: { isolated: "أ", final: "ﺄ", medial: "—", initial: "—" } },
+    { id: 34, label: "алиф мадда", value: { isolated: "آ", final: "ﺂ", medial: "—", initial: "—" } },
+    { id: 1, label: "хамза", value: { isolated: "ء", final: "—", medial: "—", initial: "—" } },
+    { id: 3, label: "бә", value: { isolated: "ب", final: "ﺐ", medial: "ﺒ", initial: "ﺑ" } },
+    { id: 4, label: "тә", value: { isolated: "ت", final: "ﺖ", medial: "ﺘ", initial: "ﺗ" } },
+    { id: 5, label: "цә", value: { isolated: "ث", final: "ﺚ", medial: "ﺜ", initial: "ﺛ" } },
+    { id: 6, label: "жим", value: { isolated: "ج", final: "ﺞ", medial: "ﺠ", initial: "ﺟ" } },
+    { id: 7, label: "ха", value: { isolated: "ح", final: "ﺢ", medial: "ﺤ", initial: "ﺣ" } },
+    { id: 8, label: "хо", value: { isolated: "خ", final: "ﺦ", medial: "ﺨ", initial: "ﺧ" } },
+    { id: 9, label: "дәл", value: { isolated: "د", final: "ﺪ", medial: "—", initial: "—" } },
+    { id: 10, label: "зәл", value: { isolated: "ذ", final: "ﺬ", medial: "—", initial: "—" } },
+    { id: 11, label: "ра", value: { isolated: "ر", final: "ﺮ", medial: "—", initial: "—" } },
+    { id: 12, label: "зәй", value: { isolated: "ز", final: "ﺰ", medial: "—", initial: "—" } },
+    { id: 13, label: "син", value: { isolated: "س", final: "ﺲ", medial: "ﺴ", initial: "ﺳ" } },
+    { id: 14, label: "шин", value: { isolated: "ش", final: "ﺶ", medial: "ﺸ", initial: "ﺷ" } },
+    { id: 15, label: "сад", value: { isolated: "ص", final: "ﺺ", medial: "ﺼ", initial: "ﺻ" } },
+    { id: 16, label: "дад", value: { isolated: "ض", final: "ﺾ", medial: "ﻀ", initial: "ﺿ" } },
+    { id: 17, label: "та", value: { isolated: "ط", final: "ﻂ", medial: "ﻄ", initial: "ﻃ" } },
+    { id: 18, label: "за", value: { isolated: "ظ", final: "ﻆ", medial: "ﻈ", initial: "ﻇ" } },
+    { id: 19, label: "ъайн", value: { isolated: "ع", final: "ﻊ", medial: "ﻌ", initial: "ﻋ" } },
+    { id: 20, label: "ғайн", value: { isolated: "غ", final: "ﻎ", medial: "ﻐ", initial: "ﻏ" } },
+    { id: 21, label: "фә", value: { isolated: "ف", final: "ﻒ", medial: "ﻔ", initial: "ﻓ" } },
+    { id: 22, label: "қаф", value: { isolated: "ق", final: "ﻖ", medial: "ﻘ", initial: "ﻗ" } },
+    { id: 23, label: "кәф", value: { isolated: "ك", final: "ﻚ", medial: "ﻜ", initial: "ﻛ" } },
+    { id: 24, label: "ләм", value: { isolated: "ل", final: "ﻞ", medial: "ﻠ", initial: "ﻟ" } },
+    { id: 25, label: "мим", value: { isolated: "م", final: "ﻢ", medial: "ﻤ", initial: "ﻣ" } },
+    { id: 26, label: "нун", value: { isolated: "ن", final: "ﻦ", medial: "ﻨ", initial: "ﻧ" } },
+    { id: 27, label: "һә", value: { isolated: "ه", final: "ﻪ", medial: "ﻬ", initial: "ﻫ" } },
+    { id: 28, label: "уау", value: { isolated: "و", final: "ﻮ", medial: "—", initial: "—" } },
+    { id: 29, label: "йә", value: { isolated: "ي", final: "ﻲ", medial: "ﻴ", initial: "ﻳ" } },
+    { id: 100, label: "0 (ар)", value: { isolated: "٠", final: "—", medial: "—", initial: "—" } },
+    { id: 101, label: "1 (ар)", value: { isolated: "١", final: "—", medial: "—", initial: "—" } },
+    { id: 102, label: "2 (ар)", value: { isolated: "٢", final: "—", medial: "—", initial: "—" } },
+    { id: 103, label: "3 (ар)", value: { isolated: "٣", final: "—", medial: "—", initial: "—" } },
+    { id: 104, label: "4 (ар)", value: { isolated: "٤", final: "—", medial: "—", initial: "—" } },
+    { id: 105, label: "5 (ар)", value: { isolated: "٥", final: "—", medial: "—", initial: "—" } },
+    { id: 106, label: "6 (ар)", value: { isolated: "٦", final: "—", medial: "—", initial: "—" } },
+    { id: 107, label: "7 (ар)", value: { isolated: "٧", final: "—", medial: "—", initial: "—" } },
+    { id: 108, label: "8 (ар)", value: { isolated: "٨", final: "—", medial: "—", initial: "—" } },
+    { id: 109, label: "9 (ар)", value: { isolated: "٩", final: "—", medial: "—", initial: "—" } },
+    { id: 110, label: "0 (фар)", value: { isolated: "۰", final: "—", medial: "—", initial: "—" } },
+    { id: 111, label: "1 (фар)", value: { isolated: "۱", final: "—", medial: "—", initial: "—" } },
+    { id: 112, label: "2 (фар)", value: { isolated: "۲", final: "—", medial: "—", initial: "—" } },
+    { id: 113, label: "3 (фар)", value: { isolated: "۳", final: "—", medial: "—", initial: "—" } },
+    { id: 114, label: "4 (фар)", value: { isolated: "۴", final: "—", medial: "—", initial: "—" } },
+    { id: 115, label: "5 (фар)", value: { isolated: "۵", final: "—", medial: "—", initial: "—" } },
+    { id: 116, label: "6 (фар)", value: { isolated: "۶", final: "—", medial: "—", initial: "—" } },
+    { id: 117, label: "7 (фар)", value: { isolated: "۷", final: "—", medial: "—", initial: "—" } },
+    { id: 118, label: "8 (фар)", value: { isolated: "۸", final: "—", medial: "—", initial: "—" } },
+    { id: 119, label: "9 (фар)", value: { isolated: "۹", final: "—", medial: "—", initial: "—" } },
   ]);
 
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
@@ -549,7 +224,6 @@ export default function App() {
 
       return { text: resultString, cursor: shapedLengthBeforeCursor };
     } catch (err) {
-      console.error("Text processing error:", err);
       return { text: newRawText, cursor: cursorIndexInRaw };
     }
   };
@@ -662,7 +336,7 @@ export default function App() {
                 </span>
               </div>
 
-              <div className="flex-1 grid gap-3 grid-cols-5 sm:grid-cols-6 md:grid-cols-7 lg:grid-cols-8 xl:grid-cols-10">
+              <div className="flex-1 grid gap-3 grid-cols-5 sm:grid-cols-6 md:grid-cols-7 lg:grid-cols-8 xl:grid-cols-10" dir="rtl">
                 {keys.map((key, i) => {
                   return (
                     <button
@@ -671,7 +345,7 @@ export default function App() {
                       title={`Вставит: ${key.value.isolated}`}
                       className="flex-1 group relative flex flex-col items-center justify-center p-1 md:p-2 bg-white hover:bg-blue-50 active:bg-blue-100 border-b-2 md:border-b-4 border-slate-300 active:border-b-0 active:translate-y-0.5 md:active:translate-y-1 rounded md:rounded-lg transition-all duration-100 text-center min-w-[36px] md:min-w-0"
                     >
-                      <span className="absolute top-0.5 left-0.5 md:top-1 md:left-1 text-[8px] md:text-[10px] text-slate-300">
+                      <span className="absolute top-0.5 right-0.5 md:top-1 md:right-1 text-[8px] md:text-[10px] text-slate-300">
                         {i + 1}
                       </span>
                       <span className="font-normal text-2xl md:text-3xl my-1 md:my-2">

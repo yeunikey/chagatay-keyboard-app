@@ -14,7 +14,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Chagatay Keyboard App",
-  description: "A simple Chagatay keyboard application built with Next.js and React.",
+  description:
+    "A simple Chagatay keyboard application built with Next.js and React.",
 };
 
 export default function RootLayout({
