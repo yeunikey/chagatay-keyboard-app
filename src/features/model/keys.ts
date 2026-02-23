@@ -1,7 +1,7 @@
 import { KeyItem } from "@/entities";
 
 const NON_FORWARD_CONNECTORS = new Set([
-  1, 2, 3, 4, 12, 13, 14, 15, 16, 36, 100, 101, 102, 103, 104, 105, 106, 107,
+  1, 2, 3, 4, 13, 14, 15, 16, 17, 37, 100, 101, 102, 103, 104, 105, 106, 107,
   108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119,
 ]);
 
@@ -33,161 +33,171 @@ const INITIAL_KEYS: KeyItem[] = [
   },
   {
     id: 6,
+    label: "пе",
+    value: {
+      isolated: "ﭖ",
+      final: "ﭗ",
+      medial: "ﭙ",
+      initial: "ﭘ",
+    },
+  },
+  {
+    id: 7,
     label: "тә",
     value: { isolated: "ت", final: "ﺖ", medial: "ﺘ", initial: "ﺗ" },
   },
   {
-    id: 7,
+    id: 8,
     label: "цә",
     value: { isolated: "ث", final: "ﺚ", medial: "ﺜ", initial: "ﺛ" },
   },
   {
-    id: 8,
+    id: 9,
     label: "жим",
     value: { isolated: "ج", final: "ﺞ", medial: "ﺠ", initial: "ﺟ" },
   },
   {
-    id: 9,
+    id: 10,
     label: "чим",
     value: { isolated: "ﭺ", final: "ﭻ", medial: "ﭽ", initial: "ﭼ" },
   },
   {
-    id: 10,
+    id: 11,
     label: "ха",
     value: { isolated: "ح", final: "ﺢ", medial: "ﺤ", initial: "ﺣ" },
   },
   {
-    id: 11,
+    id: 12,
     label: "хо",
     value: { isolated: "خ", final: "ﺦ", medial: "ﺨ", initial: "ﺧ" },
   },
   {
-    id: 12,
+    id: 13,
     label: "дәл",
     value: { isolated: "د", final: "ﺪ", medial: "ـ", initial: "د" },
   },
   {
-    id: 13,
+    id: 14,
     label: "зәл",
     value: { isolated: "ذ", final: "ﺬ", medial: "—", initial: "—" },
   },
   {
-    id: 14,
+    id: 15,
     label: "ра",
     value: { isolated: "ر", final: "ﺮ", medial: "—", initial: "—" },
   },
   {
-    id: 15,
+    id: 16,
     label: "зәй",
     value: { isolated: "ز", final: "ﺰ", medial: "—", initial: "—" },
   },
   {
-    id: 16,
+    id: 17,
     label: "же",
     value: { isolated: "ژ", final: "ﮋ", medial: "—", initial: "—" },
   },
   {
-    id: 17,
+    id: 18,
     label: "син",
     value: { isolated: "س", final: "ﺲ", medial: "ﺴ", initial: "ﺳ" },
   },
   {
-    id: 18,
+    id: 19,
     label: "шин",
     value: { isolated: "ش", final: "ﺶ", medial: "ﺸ", initial: "ﺷ" },
   },
   {
-    id: 19,
+    id: 20,
     label: "сад",
     value: { isolated: "ص", final: "ﺺ", medial: "ﺼ", initial: "ﺻ" },
   },
   {
-    id: 20,
+    id: 21,
     label: "дад",
     value: { isolated: "ض", final: "ﺾ", medial: "ﻀ", initial: "ﺿ" },
   },
   {
-    id: 21,
+    id: 22,
     label: "та",
     value: { isolated: "ط", final: "ﻂ", medial: "ﻄ", initial: "ﻃ" },
   },
   {
-    id: 22,
+    id: 23,
     label: "за",
     value: { isolated: "ظ", final: "ﻆ", medial: "ﻈ", initial: "ﻇ" },
   },
   {
-    id: 23,
+    id: 24,
     label: "ъайн",
     value: { isolated: "ع", final: "ﻊ", medial: "ﻌ", initial: "ﻋ" },
   },
   {
-    id: 24,
+    id: 25,
     label: "ғайн",
     value: { isolated: "غ", final: "ﻎ", medial: "ﻐ", initial: "ﻏ" },
   },
   {
-    id: 25,
+    id: 26,
     label: "фә",
     value: { isolated: "ف", final: "ﻒ", medial: "ﻔ", initial: "ﻓ" },
   },
   {
-    id: 26,
+    id: 27,
     label: "қаф",
     value: { isolated: "ق", final: "ﻖ", medial: "ﻘ", initial: "ﻗ" },
   },
   {
-    id: 27,
+    id: 28,
     label: "кәф",
     value: { isolated: "ك", final: "ﻚ", medial: "ﻜ", initial: "ﻛ" },
   },
   {
-    id: 28,
+    id: 29,
     label: "кәф",
     value: { isolated: "ڭ", final: "ﯔ", medial: "ﯖ", initial: "ﯕ" },
   },
   {
-    id: 29,
+    id: 30,
     label: "коф",
     value: { isolated: "ک", final: "ﮏ", medial: "ﮑ", initial: "ﮐ" },
   },
   {
-    id: 30,
+    id: 31,
     label: "гоф",
     value: { isolated: "گ", final: "ﮓ", medial: "ﮕ", initial: "ﮔ" },
   },
   {
-    id: 31,
+    id: 32,
     label: "ң",
     value: { isolated: "ݣ", final: "ـݣ", medial: "ـݣـ", initial: "ݣـ" },
   },
   {
-    id: 32,
+    id: 33,
     label: "ләм",
     value: { isolated: "ل", final: "ﻞ", medial: "ﻠ", initial: "ﻟ" },
   },
   {
-    id: 33,
+    id: 34,
     label: "мим",
     value: { isolated: "م", final: "ﻢ", medial: "ﻤ", initial: "ﻣ" },
   },
   {
-    id: 34,
+    id: 35,
     label: "нун",
     value: { isolated: "ن", final: "ﻦ", medial: "ﻨ", initial: "ﻧ" },
   },
   {
-    id: 35,
+    id: 36,
     label: "һә",
     value: { isolated: "ه", final: "ﻪ", medial: "ﻬ", initial: "ﻫ" },
   },
   {
-    id: 36,
+    id: 37,
     label: "уау",
     value: { isolated: "و", final: "ﻮ", medial: "—", initial: "—" },
   },
   {
-    id: 37,
+    id: 38,
     label: "йә",
     value: { isolated: "ي", final: "ﻲ", medial: "ﻴ", initial: "ﻳ" },
   },
@@ -307,8 +317,4 @@ INITIAL_KEYS.forEach((k) => {
     CHAR_TO_KEY_MAP.set(cleanChar(k.value.initial), k);
 });
 
-export {
-    CHAR_TO_KEY_MAP,
-    INITIAL_KEYS,
-    NON_FORWARD_CONNECTORS
-}
+export { CHAR_TO_KEY_MAP, INITIAL_KEYS, NON_FORWARD_CONNECTORS };
