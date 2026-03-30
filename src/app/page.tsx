@@ -26,15 +26,16 @@ export default function App() {
   );
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans p-4 md:px-12 md:py-6">
+    <div className="min-h-screen bg-background text-slate-900 font-sans p-4 md:px-12 md:py-0 pb-24!">
       <div
-        className={`mx-auto grid grid-cols-1 ${showBookmarks ? "max-w-dvw lg:grid-cols-4" : "max-w-7xl lg:grid-cols-1"} gap-4 items-start`}
+        className={`mx-auto grid grid-cols-1 ${showBookmarks ? "max-w-dvw lg:grid-cols-4" : "max-w-7xl lg:grid-cols-1"} gap-16 items-start`}
       >
         {showBookmarks && (
           <BookmarksWidget
             bookmarks={bookmarks}
             onInsert={insertText}
             onDelete={deleteBookmark}
+            inputText={inputText} addBookmark={addBookmark}
           />
         )}
 

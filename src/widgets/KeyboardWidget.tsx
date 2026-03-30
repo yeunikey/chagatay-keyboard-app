@@ -19,7 +19,7 @@ const KeyboardWidget = ({
   );
 
   return (
-    <div className="bg-slate-200/50 p-4 rounded-xl border border-slate-200 flex-1 flex flex-col space-y-6">
+    <div className="flex-1 flex flex-col space-y-6">
       <div>
         <div className="mb-4 flex items-center justify-between">
           <h2 className="font-semibold text-slate-700">Клавиши</h2>
@@ -37,7 +37,7 @@ const KeyboardWidget = ({
         </div>
       </div>
 
-      <div className="border-t border-slate-300 pt-3">
+      <div className="pt-3">
         <div className="mb-4 flex items-center justify-between">
           <h2 className="font-semibold text-slate-700">Арабские цифры</h2>
           <span className="text-xs bg-slate-300 text-slate-700 px-2 py-0.5 rounded-full">
@@ -51,7 +51,7 @@ const KeyboardWidget = ({
         </div>
       </div>
 
-      <div className="border-t border-slate-300 pt-3">
+      <div className="pt-3">
         <div className="mb-4 flex items-center justify-between">
           <h2 className="font-semibold text-slate-700">Персидские цифры</h2>
           <span className="text-xs bg-slate-300 text-slate-700 px-2 py-0.5 rounded-full">

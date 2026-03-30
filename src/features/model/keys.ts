@@ -202,6 +202,11 @@ const INITIAL_KEYS: KeyItem[] = [
     value: { isolated: "ي", final: "ﻲ", medial: "ﻴ", initial: "ﻳ" },
   },
   {
+    id: 39,
+    label: "йә",
+    value: { isolated: "ى", final: "ﻰ", medial: "ﻴ", initial: "ﻳ" },
+  },
+  {
     id: 100,
     label: "0",
     value: { isolated: "٠", final: "—", medial: "—", initial: "—" },

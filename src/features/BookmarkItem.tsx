@@ -10,7 +10,7 @@ const BookmarkItem = ({
   onInsert: (text: string) => void;
   onDelete: (id: string) => void;
 }) => (
-  <div className="bg-white p-3 rounded-lg border border-slate-300 shadow-sm flex flex-col gap-2 transition-all">
+  <div className="bg-background p-3 rounded-lg shadow-sm flex flex-col gap-2 transition-all">
     <div className="flex justify-between items-start gap-2">
       <span className="font-semibold text-sm text-slate-800 truncate">
         {bookmark.name}
