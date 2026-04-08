@@ -46,7 +46,7 @@ const EditorWidget = ({
           />
 
           <div className="text-3xl font-semibold text-slate-700 flex items-center gap-2">
-            Qalam
+            Chagatai Qalam
           </div>
         </div>
 
