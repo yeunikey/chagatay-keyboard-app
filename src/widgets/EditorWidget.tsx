@@ -27,7 +27,7 @@ const EditorWidget = ({
   clearText: () => void;
   showBookmarks: boolean;
   toggleBookmarks: () => void;
-  addBookmark: (text: string) => void;
+  addBookmark: (text: string, name: string) => void;
   handleBackspace: () => void;
 }) => {
   return (
