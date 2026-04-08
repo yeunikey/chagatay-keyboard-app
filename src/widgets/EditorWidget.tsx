@@ -8,6 +8,7 @@ import {
   RotateCcw,
   Trash,
 } from "lucide-react";
+import Image from "next/image";
 import { RefObject } from "react";
 
 const EditorWidget = ({
@@ -31,10 +32,22 @@ const EditorWidget = ({
   addBookmark: (text: string) => void;
 }) => {
   return (
-    <div className="space-y-3">
+    <div className="space-y-6">
       <div className="flex justify-between">
-        <div className="text-3xl font-semibold text-slate-700 flex items-center gap-2">
-          Qalam
+        <div className="flex items-center gap-4 py-2">
+          <Image
+            src={'/logo2.png'}
+            alt="logo"
+            width={5741}
+            height={6728}
+
+            className="h-12 w-auto"
+          />
+
+          <div className="text-3xl font-semibold text-slate-700 flex items-center gap-2">
+            Qalam
+          </div>
+
         </div>
 
         <div className="flex gap-8 items-center h-full">

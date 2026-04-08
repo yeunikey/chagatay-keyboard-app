@@ -169,7 +169,6 @@ const useEditor = () => {
       setInputText(text);
       setTimeout(() => {
         if (textareaRef.current) {
-          textareaRef.current.focus();
           textareaRef.current.setSelectionRange(cursor, cursor);
         }
       }, 0);
