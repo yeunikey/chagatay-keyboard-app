@@ -140,9 +140,8 @@ const useBookmarks = () => {
     localStorage.setItem("arabic_bookmarks", JSON.stringify(bookmarks));
   }, [bookmarks]);
 
-  const addBookmark = useCallback((text: string) => {
+  const addBookmark = useCallback((text: string, name: string) => {
     if (!text.trim()) return;
-    const name = window.prompt("Введите название закладки:");
     if (name) {
       setBookmarks((prev) => [
         ...prev,
@@ -201,10 +200,24 @@ const useEditor = () => {
   }, []);
 
   const clearText = useCallback(() => {
-    if (window.confirm("Очистить все поле ввода?")) {
-      setInputText("");
-    }
+    setInputText("");
   }, []);
+
+  const handleBackspace = useCallback(() => {
+    if (!textareaRef.current) return;
+    const start = textareaRef.current.selectionStart;
+    const end = textareaRef.current.selectionEnd;
+
+    if (start === end && start > 0) {
+      const newText =
+        inputText.substring(0, start - 1) + inputText.substring(end);
+      applyTextChange(newText, start - 1);
+    } else if (start !== end) {
+      const newText = inputText.substring(0, start) + inputText.substring(end);
+      applyTextChange(newText, start);
+    }
+    textareaRef.current.focus();
+  }, [inputText, applyTextChange]);
 
   return {
     inputText,
@@ -214,6 +227,7 @@ const useEditor = () => {
     insertText,
     adjustFontSize,
     clearText,
+    handleBackspace,
   };
 };
 

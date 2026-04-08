@@ -6,6 +6,7 @@ import BookmarksWidget from "@/widgets/BookmarksWidget";
 import EditorWidget from "@/widgets/EditorWidget";
 import KeyboardWidget from "@/widgets/KeyboardWidget";
 import { KeyItem } from "@/entities";
+import ModalOverlay from "@/shared/ModalOverlay";
 
 export default function App() {
   const [showBookmarks, setShowBookmarks] = useState(false);
@@ -18,7 +19,37 @@ export default function App() {
     insertText,
     adjustFontSize,
     clearText,
+    handleBackspace,
   } = useEditor();
+
+  const [isPromptModalOpen, setIsPromptModalOpen] = useState(false);
+  const [bookmarkNameInput, setBookmarkNameInput] = useState("");
+  const [bookmarkTextToSave, setBookmarkTextToSave] = useState("");
+
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+
+  const handleAddBookmarkClick = useCallback((text: string) => {
+    if (!text.trim()) return;
+    setBookmarkTextToSave(text);
+    setBookmarkNameInput("");
+    setIsPromptModalOpen(true);
+  }, []);
+
+  const confirmAddBookmark = useCallback(() => {
+    if (bookmarkNameInput.trim()) {
+      addBookmark(bookmarkTextToSave, bookmarkNameInput);
+    }
+    setIsPromptModalOpen(false);
+  }, [bookmarkNameInput, bookmarkTextToSave, addBookmark]);
+
+  const handleClearTrigger = useCallback(() => {
+    setIsConfirmModalOpen(true);
+  }, []);
+
+  const confirmClear = useCallback(() => {
+    clearText();
+    setIsConfirmModalOpen(false);
+  }, [clearText]);
 
   const handleKeyClick = useCallback(
     (key: KeyItem) => insertText(key.value.isolated),
@@ -35,7 +66,8 @@ export default function App() {
             bookmarks={bookmarks}
             onInsert={insertText}
             onDelete={deleteBookmark}
-            inputText={inputText} addBookmark={addBookmark}
+            inputText={inputText}
+            addBookmark={handleAddBookmarkClick}
           />
         )}
 
@@ -48,14 +80,81 @@ export default function App() {
             textareaRef={textareaRef}
             handleChange={handleChange}
             adjustFontSize={adjustFontSize}
-            clearText={clearText}
+            clearText={handleClearTrigger}
             showBookmarks={showBookmarks}
             toggleBookmarks={() => setShowBookmarks((prev) => !prev)}
             addBookmark={addBookmark}
+            handleBackspace={handleBackspace}
           />
           <KeyboardWidget onKeyClick={handleKeyClick} />
         </main>
       </div>
+
+      {isPromptModalOpen && (
+        <ModalOverlay>
+          <div className="bg-white rounded-3xl p-6 w-full max-w-sm shadow-xl space-y-4">
+            <h3 className="text-xl font-semibold text-slate-800">
+              Добавить закладку
+            </h3>
+            <p className="text-sm text-slate-500">
+              Введите название для сохранения текущего текста.
+            </p>
+            <input
+              autoFocus
+              type="text"
+              value={bookmarkNameInput}
+              onChange={(e) => setBookmarkNameInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") confirmAddBookmark();
+              }}
+              className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-slate-800"
+              placeholder="Название закладки..."
+            />
+            <div className="flex justify-end gap-3 mt-6 pt-2">
+              <button
+                onClick={() => setIsPromptModalOpen(false)}
+                className="px-5 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 font-medium transition-colors"
+              >
+                Отмена
+              </button>
+              <button
+                onClick={confirmAddBookmark}
+                className="px-5 py-2.5 rounded-xl bg-blue-500 text-white font-medium shadow-sm hover:bg-blue-600 transition-colors"
+              >
+                Сохранить
+              </button>
+            </div>
+          </div>
+        </ModalOverlay>
+      )}
+
+      {isConfirmModalOpen && (
+        <ModalOverlay>
+          <div className="bg-white rounded-3xl p-6 w-full max-w-sm shadow-xl space-y-4">
+            <h3 className="text-xl font-semibold text-slate-800">
+              Очистить поле?
+            </h3>
+            <p className="text-slate-600 text-sm">
+              Вы уверены, что хотите полностью очистить поле ввода? Это действие
+              нельзя отменить.
+            </p>
+            <div className="flex justify-end gap-3 mt-6 pt-2">
+              <button
+                onClick={() => setIsConfirmModalOpen(false)}
+                className="px-5 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 font-medium transition-colors"
+              >
+                Отмена
+              </button>
+              <button
+                onClick={confirmClear}
+                className="px-5 py-2.5 rounded-xl bg-red-500 text-white font-medium shadow-sm hover:bg-red-600 transition-colors"
+              >
+                Очистить
+              </button>
+            </div>
+          </div>
+        </ModalOverlay>
+      )}
     </div>
   );
 }

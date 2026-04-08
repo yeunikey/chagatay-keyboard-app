@@ -1,11 +1,9 @@
 import {
   Bookmark,
   Copy,
-  Delete,
   DeleteIcon,
   Minus,
   Plus,
-  RotateCcw,
   Trash,
 } from "lucide-react";
 import Image from "next/image";
@@ -19,7 +17,7 @@ const EditorWidget = ({
   adjustFontSize,
   clearText,
   toggleBookmarks,
-  addBookmark,
+  handleBackspace,
 }: {
   inputText: string;
   fontSize: number;
@@ -30,24 +28,23 @@ const EditorWidget = ({
   showBookmarks: boolean;
   toggleBookmarks: () => void;
   addBookmark: (text: string) => void;
+  handleBackspace: () => void;
 }) => {
   return (
     <div className="space-y-6">
       <div className="flex justify-between">
         <div className="flex items-center gap-4 py-2">
           <Image
-            src={'/logo2.png'}
+            src={"/logo2.png"}
             alt="logo"
             width={5741}
             height={6728}
-
             className="h-12 w-auto"
           />
 
           <div className="text-3xl font-semibold text-slate-700 flex items-center gap-2">
             Qalam
           </div>
-
         </div>
 
         <div className="flex gap-8 items-center h-full">
@@ -94,15 +91,24 @@ const EditorWidget = ({
         </div>
       </div>
 
-      <textarea
-        ref={textareaRef}
-        value={inputText}
-        onChange={handleChange}
-        style={{ fontSize: `${fontSize}px` }}
-        placeholder="Результат ввода"
-        className="w-full h-36 lg:h-[200px] p-4 bg-white rounded-2xl shadow-sm focus:ring-0 focus:outline-none resize-none font-medium leading-relaxed text-slate-800"
-        dir="rtl"
-      />
+      <div className="relative w-full">
+        <textarea
+          ref={textareaRef}
+          value={inputText}
+          onChange={handleChange}
+          style={{ fontSize: `${fontSize}px` }}
+          placeholder="Результат ввода"
+          className="w-full h-36 lg:h-[200px] p-4 bg-white rounded-2xl shadow-sm focus:ring-0 focus:outline-none resize-none font-medium leading-relaxed text-slate-800"
+          dir="rtl"
+        />
+
+        <div
+          className="absolute bottom-4 right-3 bg-slate-500 text-white p-3 rounded-2xl"
+          onClick={handleBackspace}
+        >
+          <DeleteIcon size={24} className="inline-block stroke-2" />
+        </div>
+      </div>
     </div>
   );
 };
