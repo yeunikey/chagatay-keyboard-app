@@ -103,6 +103,7 @@ const EditorWidget = ({
           placeholder="Результат ввода"
           className="w-full h-36 lg:h-[200px] p-4 bg-white rounded-2xl shadow-sm focus:ring-0 focus:outline-none resize-none font-medium leading-relaxed text-slate-800"
           dir="rtl"
+          inputMode="none"
         />
 
         <div
