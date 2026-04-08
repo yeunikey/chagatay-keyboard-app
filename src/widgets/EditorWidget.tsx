@@ -4,6 +4,7 @@ import {
   DeleteIcon,
   Minus,
   Plus,
+  SpaceIcon,
   Trash,
 } from "lucide-react";
 import Image from "next/image";
@@ -18,6 +19,7 @@ const EditorWidget = ({
   clearText,
   toggleBookmarks,
   handleBackspace,
+  insertText,
 }: {
   inputText: string;
   fontSize: number;
@@ -29,6 +31,7 @@ const EditorWidget = ({
   toggleBookmarks: () => void;
   addBookmark: (text: string, name: string) => void;
   handleBackspace: () => void;
+  insertText: (text: string) => void;
 }) => {
   return (
     <div className="space-y-6">
@@ -103,10 +106,18 @@ const EditorWidget = ({
         />
 
         <div
-          className="absolute bottom-4 right-3 bg-slate-500 text-white p-3 rounded-2xl"
+          className="absolute bottom-4 right-3 bg-slate-500 text-white py-2 px-3 rounded-2xl cursor-pointer hover:bg-slate-600 transition-colors"
+          onMouseDown={(e) => e.preventDefault()}
           onClick={handleBackspace}
         >
           <DeleteIcon size={24} className="inline-block stroke-2" />
+        </div>
+        <div
+          className="absolute bottom-4 right-20 bg-slate-400 text-white py-2 px-3 rounded-2xl cursor-pointer hover:bg-slate-500 transition-colors"
+          onMouseDown={(e) => e.preventDefault()}
+          onClick={() => insertText(" ")}
+        >
+          <SpaceIcon size={24} className="inline-block stroke-2" />
         </div>
       </div>
     </div>

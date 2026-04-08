@@ -17,7 +17,7 @@ const BookmarkItem = ({
       </span>
     </div>
     <div
-      className="text-right text-lg font-mono text-slate-700 bg-slate-50 p-2 rounded border border-slate-100 break-words"
+      className="text-right text-lg font-mono text-slate-700 bg-slate-100 p-2 rounded border border-slate-100 break-words"
       dir="rtl"
     >
       {bookmark.text}

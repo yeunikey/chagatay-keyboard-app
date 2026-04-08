@@ -85,6 +85,7 @@ export default function App() {
             toggleBookmarks={() => setShowBookmarks((prev) => !prev)}
             addBookmark={addBookmark}
             handleBackspace={handleBackspace}
+            insertText={insertText}
           />
           <KeyboardWidget onKeyClick={handleKeyClick} />
         </main>
