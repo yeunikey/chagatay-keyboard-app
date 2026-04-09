@@ -306,6 +306,31 @@ const INITIAL_KEYS: KeyItem[] = [
     label: "9",
     value: { isolated: "۹", final: "—", medial: "—", initial: "—" },
   },
+  {
+    id: 120,
+    label: "фатха",
+    value: { isolated: "َ", final: "—", medial: "—", initial: "—" },
+  },
+  {
+    id: 121,
+    label: "касра",
+    value: { isolated: "ِ", final: "—", medial: "—", initial: "—" },
+  },
+  {
+    id: 122,
+    label: "дамма",
+    value: { isolated: "ُ", final: "—", medial: "—", initial: "—" },
+  },
+  {
+    id: 123,
+    label: "сукун",
+    value: { isolated: "ْ", final: "—", medial: "—", initial: "—" },
+  },
+  {
+    id: 124,
+    label: "шадда",
+    value: { isolated: "ّ", final: "—", medial: "—", initial: "—" },
+  },
 ];
 
 const CHAR_TO_KEY_MAP = new Map<string, KeyItem>();

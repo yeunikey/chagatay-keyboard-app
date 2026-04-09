@@ -14,7 +14,11 @@ const KeyboardWidget = ({
     [],
   );
   const farsiDigits = useMemo(
-    () => INITIAL_KEYS.filter((k) => k.id >= 110),
+    () => INITIAL_KEYS.filter((k) => k.id >= 110 && k.id < 120),
+    [],
+  );
+  const diacritics = useMemo(
+    () => INITIAL_KEYS.filter((k) => k.id >= 120 && k.id < 130),
     [],
   );
 
@@ -60,6 +64,20 @@ const KeyboardWidget = ({
         </div>
         <div className="grid gap-3 grid-cols-5 sm:grid-cols-10" dir="rtl">
           {farsiDigits.map((key, i) => (
+            <KeyButton key={key.id} item={key} index={i} onClick={onKeyClick} />
+          ))}
+        </div>
+      </div>
+
+      <div className="pt-3">
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="font-semibold text-slate-700">Диакритические знаки</h2>
+          <span className="text-xs bg-slate-300 text-slate-700 px-2 py-0.5 rounded-full">
+            {diacritics.length}
+          </span>
+        </div>
+        <div className="grid gap-3 grid-cols-5 sm:grid-cols-10" dir="rtl">
+          {diacritics.map((key, i) => (
             <KeyButton key={key.id} item={key} index={i} onClick={onKeyClick} />
           ))}
         </div>
