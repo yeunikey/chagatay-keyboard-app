@@ -329,7 +329,7 @@ const INITIAL_KEYS: KeyItem[] = [
   {
     id: 124,
     label: "шадда",
-    value: { isolated: "ّ", fifnal: "ّ", medial: "ّ", initial: "ّ" },
+    value: { isolated: "ّ", final: "ّ", medial: "ّ", initial: "ّ" },
   },
 ];
 
