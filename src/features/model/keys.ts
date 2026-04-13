@@ -304,32 +304,32 @@ const INITIAL_KEYS: KeyItem[] = [
   {
     id: 119,
     label: "9",
-    value: { isolated: "۹", final: "—", medial: "—", initial: "—" },
+    value: { isolated: "۹", final: "۹", medial: "۹", initial: "۹" },
   },
   {
     id: 120,
     label: "фатха",
-    value: { isolated: "َ", final: "—", medial: "—", initial: "—" },
+    value: { isolated: "َ", final: "َ", medial: "َ", initial: "َ" },
   },
   {
     id: 121,
     label: "касра",
-    value: { isolated: "ِ", final: "—", medial: "—", initial: "—" },
+    value: { isolated: "ِ", final: "ِ", medial: "ِ", initial: "ِ" },
   },
   {
     id: 122,
     label: "дамма",
-    value: { isolated: "ُ", final: "—", medial: "—", initial: "—" },
+    value: { isolated: "ُ", final: "ُ", medial: "ُ", initial: "ُ" },
   },
   {
     id: 123,
     label: "сукун",
-    value: { isolated: "ْ", final: "—", medial: "—", initial: "—" },
+    value: { isolated: "ْ", final: "ْ", medial: "ْ", initial: "ْ" },
   },
   {
     id: 124,
     label: "шадда",
-    value: { isolated: "ّ", final: "—", medial: "—", initial: "—" },
+    value: { isolated: "ّ", fifnal: "ّ", medial: "ّ", initial: "ّ" },
   },
 ];
 
