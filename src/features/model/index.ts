@@ -11,7 +11,7 @@ const getShape = (
   return key.value[type] || key.value.isolated;
 };
 
-const isDiacriticKey = (key?: KeyItem): key is KeyItem =>
+const isDiacriticKey = (key?: KeyItem): boolean =>
   Boolean(key && DIACRITIC_KEY_IDS.has(key.id));
 
 const getPreviousBaseKey = (
@@ -22,6 +22,7 @@ const getPreviousBaseKey = (
     const key = keyChain[i];
     if (!isDiacriticKey(key)) return key;
   }
+  return undefined;
 };
 
 const getNextBaseKey = (
@@ -32,6 +33,7 @@ const getNextBaseKey = (
     const key = keyChain[i];
     if (!isDiacriticKey(key)) return key;
   }
+  return undefined;
 };
 
 const shapeKeys = (keyChain: KeyItem[]): string[] => {
@@ -40,10 +42,12 @@ const shapeKeys = (keyChain: KeyItem[]): string[] => {
       return getShape(current, "isolated");
     }
 
-    const prev = getPreviousBaseKey(keyChain, i);
-    const next = getNextBaseKey(keyChain, i);
+    const prev: KeyItem | undefined = getPreviousBaseKey(keyChain, i);
+    const next: KeyItem | undefined = getNextBaseKey(keyChain, i);
 
-    const canPrevConnectForward = prev && !NON_FORWARD_CONNECTORS.has(prev.id);
+    const canPrevConnectForward = prev
+      ? !NON_FORWARD_CONNECTORS.has(prev.id)
+      : false;
     const canCurrentConnectBackward = current.value.final !== "—";
     const connectToPrev = canPrevConnectForward && canCurrentConnectBackward;
 
