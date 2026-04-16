@@ -2,6 +2,8 @@ import { KeyItem, TokenGroup, SavedBookmark } from "@/entities";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { NON_FORWARD_CONNECTORS, CHAR_TO_KEY_MAP } from "./keys";
 
+const DIACRITIC_KEY_IDS = new Set([120, 121, 122, 123, 124]);
+
 const getShape = (
   key: KeyItem,
   type: "isolated" | "final" | "medial" | "initial",
@@ -9,10 +11,37 @@ const getShape = (
   return key.value[type] || key.value.isolated;
 };
 
+const isDiacriticKey = (key?: KeyItem): key is KeyItem =>
+  Boolean(key && DIACRITIC_KEY_IDS.has(key.id));
+
+const getPreviousBaseKey = (
+  keyChain: KeyItem[],
+  startIndex: number,
+): KeyItem | undefined => {
+  for (let i = startIndex - 1; i >= 0; i--) {
+    const key = keyChain[i];
+    if (!isDiacriticKey(key)) return key;
+  }
+};
+
+const getNextBaseKey = (
+  keyChain: KeyItem[],
+  startIndex: number,
+): KeyItem | undefined => {
+  for (let i = startIndex + 1; i < keyChain.length; i++) {
+    const key = keyChain[i];
+    if (!isDiacriticKey(key)) return key;
+  }
+};
+
 const shapeKeys = (keyChain: KeyItem[]): string[] => {
   return keyChain.map((current, i) => {
-    const prev = keyChain[i - 1];
-    const next = keyChain[i + 1];
+    if (isDiacriticKey(current)) {
+      return getShape(current, "isolated");
+    }
+
+    const prev = getPreviousBaseKey(keyChain, i);
+    const next = getNextBaseKey(keyChain, i);
 
     const canPrevConnectForward = prev && !NON_FORWARD_CONNECTORS.has(prev.id);
     const canCurrentConnectBackward = current.value.final !== "—";
